@@ -1,0 +1,713 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>800</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>OLES Online Exam System</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QDialog{
+background: qlineargradient( x1:0 y1:0, x2:1 y2:0, stop:0 #006BA6, stop:1 #8f2d56);}</string>
+  </property>
+  <widget class="QLabel" name="backgroundlbl">
+   <property name="geometry">
+    <rect>
+     <x>-60</x>
+     <y>0</y>
+     <width>1100</width>
+     <height>800</height>
+    </rect>
+   </property>
+   <property name="toolTipDuration">
+    <number>-1</number>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::AutoText</enum>
+   </property>
+   <property name="pixmap">
+    <pixmap>img/login3.png</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QFrame" name="loginframe">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>685</x>
+     <y>0</y>
+     <width>515</width>
+     <height>800</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>20</pointsize>
+     <weight>50</weight>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#loginframe {
+background: rgba( 255, 255, 255, 0.20 );
+border: 1px solid rgba( 255, 255, 255, 0.18 );
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="QPushButton" name="loginbtn">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>520</y>
+      <width>171</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>-1</pointsize>
+      <weight>75</weight>
+      <italic>false</italic>
+      <bold>true</bold>
+      <underline>false</underline>
+      <strikeout>false</strikeout>
+      <kerning>true</kerning>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton{ background: qlineargradient( x1:0 y1:0, x2:1 y2:0, stop:0 #006BA6, stop:1 #8f2d56);
+border: 1px solid gray;
+border-radius: 5px;
+padding: 0 8px;
+selection-background-color: gray;
+color: white;
+font-size: 30px;}
+QPushButton:hover { background: qlineargradient( x1:0 y1:0, x2:1 y2:0, stop:1 #006BA6, stop:0 #8f2d56);}</string>
+    </property>
+    <property name="text">
+     <string>Login</string>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>30</width>
+      <height>30</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="rollno">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>300</y>
+      <width>400</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>-1</pointsize>
+     </font>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::DefaultContextMenu</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit{ background-color:rgba(255,255,255,0.6);
+border: 1px solid gray;
+border-radius: 5px;
+padding: 0 8px;
+selection-background-color: gray;
+font-size: 25px;}
+QLineEdit:focus { background-color:rgba(255,255 255,0.8);}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="frame">
+     <bool>false</bool>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="readOnly">
+     <bool>false</bool>
+    </property>
+    <property name="placeholderText">
+     <string>Roll No.</string>
+    </property>
+    <property name="clearButtonEnabled">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="password">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>410</y>
+      <width>400</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>-1</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit{ background-color:rgba(255,255,255,0.6);
+border: 1px solid gray;
+border-radius: 5px;
+padding: 0 8px;
+selection-background-color: gray;
+font-size: 25px;}
+QLineEdit:focus { background-color:rgba(255,255 255,0.8);}</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="placeholderText">
+     <string>Password</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="typeCombo">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>200</y>
+      <width>171</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="toolTipDuration">
+     <number>1</number>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QComboBox{ background-color:rgba(255,255,255,0.6);
+border: 1px solid gray;
+border-radius: 5px;
+padding: 0 8px;
+selection-background-color: gray;
+font-size: 25px;
+color:grey;}
+QComboBox:focus { background-color:rgba(255,255 255,0.8);}</string>
+    </property>
+    <property name="editable">
+     <bool>false</bool>
+    </property>
+    <property name="currentText">
+     <string>Admin</string>
+    </property>
+    <item>
+     <property name="text">
+      <string>Admin</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Teacher</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Student</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QPushButton" name="accountbtn">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>530</y>
+      <width>201</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>18</pointsize>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
+      <underline>false</underline>
+      <strikeout>false</strikeout>
+      <kerning>true</kerning>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton{
+border: none;
+color: white;
+background:none;}
+QPushButton:hover{
+text-decoration:underline;}</string>
+    </property>
+    <property name="text">
+     <string>Create an account</string>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>30</width>
+      <height>30</height>
+     </size>
+    </property>
+   </widget>
+   <zorder>loginbtn</zorder>
+   <zorder>password</zorder>
+   <zorder>rollno</zorder>
+   <zorder>typeCombo</zorder>
+   <zorder>accountbtn</zorder>
+  </widget>
+  <widget class="QLabel" name="blurlbl">
+   <property name="geometry">
+    <rect>
+     <x>685</x>
+     <y>0</y>
+     <width>515</width>
+     <height>800</height>
+    </rect>
+   </property>
+   <property name="pixmap">
+    <pixmap>img/login4.png</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QFrame" name="signframe">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>685</x>
+     <y>0</y>
+     <width>515</width>
+     <height>800</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>20</pointsize>
+     <weight>50</weight>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#signframe{
+background: rgba( 255, 255, 255, 0.20 );
+border: 1px solid rgba( 255, 255, 255, 0.18 );
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="QPushButton" name="signbtn">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>690</y>
+      <width>171</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>-1</pointsize>
+      <weight>75</weight>
+      <italic>false</italic>
+      <bold>true</bold>
+      <underline>false</underline>
+      <strikeout>false</strikeout>
+      <kerning>true</kerning>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton{ background: qlineargradient( x1:0 y1:0, x2:1 y2:0, stop:0 #006BA6, stop:1 #8f2d56);
+border: 1px solid gray;
+border-radius: 5px;
+padding: 0 8px;
+selection-background-color: gray;
+color: white;
+font-size: 30px;}
+QPushButton:hover { background: qlineargradient( x1:0 y1:0, x2:1 y2:0, stop:1 #006BA6, stop:0 #8f2d56);}</string>
+    </property>
+    <property name="text">
+     <string>Sign Up</string>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>30</width>
+      <height>30</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="rollno_2">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>230</y>
+      <width>401</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>-1</pointsize>
+     </font>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::DefaultContextMenu</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit{ background-color:rgba(255,255,255,0.6);
+border: 1px solid gray;
+border-radius: 5px;
+padding: 0 8px;
+selection-background-color: gray;
+font-size: 25px;}
+QLineEdit:focus { background-color:rgba(255,255 255,0.8);}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="frame">
+     <bool>false</bool>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="readOnly">
+     <bool>false</bool>
+    </property>
+    <property name="placeholderText">
+     <string>Roll No.</string>
+    </property>
+    <property name="clearButtonEnabled">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="password_2">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>510</y>
+      <width>400</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>-1</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit{ background-color:rgba(255,255,255,0.6);
+border: 1px solid gray;
+border-radius: 5px;
+padding: 0 8px;
+selection-background-color: gray;
+font-size: 25px;}
+QLineEdit:focus { background-color:rgba(255,255 255,0.8);}</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="placeholderText">
+     <string>Password</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="typeCombo_2">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>40</y>
+      <width>171</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="toolTipDuration">
+     <number>1</number>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QComboBox{ background-color:rgba(255,255,255,0.6);
+border: 1px solid gray;
+border-radius: 5px;
+padding: 0 8px;
+selection-background-color: gray;
+font-size: 25px;
+color:grey;}
+QComboBox:focus { background-color:rgba(255,255 255,0.8);}</string>
+    </property>
+    <property name="editable">
+     <bool>false</bool>
+    </property>
+    <property name="currentText">
+     <string>Admin</string>
+    </property>
+    <item>
+     <property name="text">
+      <string>Admin</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Teacher</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Student</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QPushButton" name="accountbtn_2">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>700</y>
+      <width>191</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>18</pointsize>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
+      <underline>false</underline>
+      <strikeout>false</strikeout>
+      <kerning>true</kerning>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton{
+border: none;
+color: white;
+background:none;}
+QPushButton:hover{
+text-decoration:underline;}</string>
+    </property>
+    <property name="text">
+     <string>Login to account</string>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>30</width>
+      <height>30</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="password_3">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>600</y>
+      <width>400</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>-1</pointsize>
+     </font>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::DefaultContextMenu</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit{ background-color:rgba(255,255,255,0.6);
+border: 1px solid gray;
+border-radius: 5px;
+padding: 0 8px;
+selection-background-color: gray;
+font-size: 25px;}
+QLineEdit:focus { background-color:rgba(255,255 255,0.8);}</string>
+    </property>
+    <property name="frame">
+     <bool>false</bool>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="readOnly">
+     <bool>false</bool>
+    </property>
+    <property name="placeholderText">
+     <string>Confirm Password</string>
+    </property>
+    <property name="clearButtonEnabled">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="email">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>410</y>
+      <width>400</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>-1</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit{ background-color:rgba(255,255,255,0.6);
+border: 1px solid gray;
+border-radius: 5px;
+padding: 0 8px;
+selection-background-color: gray;
+font-size: 25px;}
+QLineEdit:focus { background-color:rgba(255,255 255,0.8);}</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="placeholderText">
+     <string>Email</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="name">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>320</y>
+      <width>400</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>-1</pointsize>
+     </font>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::DefaultContextMenu</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit{ background-color:rgba(255,255,255,0.6);
+border: 1px solid gray;
+border-radius: 5px;
+padding: 0 8px;
+selection-background-color: gray;
+font-size: 25px;}
+QLineEdit:focus { background-color:rgba(255,255 255,0.8);}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="frame">
+     <bool>false</bool>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="readOnly">
+     <bool>false</bool>
+    </property>
+    <property name="placeholderText">
+     <string>Full Name</string>
+    </property>
+    <property name="clearButtonEnabled">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="photolbl">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>40</y>
+      <width>161</width>
+      <height>151</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="pixmap">
+     <pixmap>img/add-user.png</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="photobtn">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>130</y>
+      <width>171</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>-1</pointsize>
+      <weight>75</weight>
+      <italic>false</italic>
+      <bold>true</bold>
+      <underline>false</underline>
+      <strikeout>false</strikeout>
+      <kerning>true</kerning>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton{ background: qlineargradient( x1:0 y1:0, x2:1 y2:0, stop:0 #006BA6, stop:1 #8f2d56);
+border: 1px solid gray;
+border-radius: 5px;
+padding: 0 8px;
+selection-background-color: gray;
+color: white;
+font-size: 30px;}
+QPushButton:hover { background: qlineargradient( x1:0 y1:0, x2:1 y2:0, stop:1 #006BA6, stop:0 #8f2d56);}</string>
+    </property>
+    <property name="text">
+     <string>Photo</string>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>30</width>
+      <height>30</height>
+     </size>
+    </property>
+   </widget>
+  </widget>
+  <zorder>backgroundlbl</zorder>
+  <zorder>blurlbl</zorder>
+  <zorder>loginframe</zorder>
+  <zorder>signframe</zorder>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
