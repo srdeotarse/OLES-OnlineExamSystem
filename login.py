@@ -21,7 +21,7 @@ class Login(QDialog):
     def loginFunction(self):
         rollno = self.rollno.text()
         password = self.password.text()
-        print("Successfully logged in with rollno - ",rollno,"and password - ",password)
+        print("Successfully in with rollno - ",rollno,"and password - ",password)
         self.connectDB()
 
     def createAccount(self):
