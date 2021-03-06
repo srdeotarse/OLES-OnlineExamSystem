@@ -1,7 +1,8 @@
 import sys
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import * 
+from PyQt5.QtGui import *
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import *
 from PyQt5.uic import loadUi
 import mysql.connector
@@ -12,18 +13,64 @@ class Login(QDialog):
         super(Login,self).__init__()
         loadUi("login.ui",self)
         self.signframe.setVisible(False)
-        self.loginbtn.clicked.connect(self.loginFunction)
+        self.loginbtn.clicked.connect(self.login)
         self.signbtn.clicked.connect(self.signup)
         self.blur()
         self.accountbtn.clicked.connect(self.createAccount)
         self.accountbtn_2.clicked.connect(self.loginAccount)
-        self.photobtn.clicked.connect(self.getfile)        
+        self.photobtn.clicked.connect(self.getfile)
 
-    def loginFunction(self):
-        rollno = self.rollno.text()
-        password = self.password.text()
-        print("Successfully logged in with rollno - ",rollno,"and password - ",password)
+    def login(self):
+        try:
+            print("hi")
+            password = self.password.get()
+            rollno = self.rollno.get()
 
+            connection = mysql.connector.connect(host='sql12.freesqldatabase.com', database='sql12394903',
+                                                 user='sql12394903', password='WNRjtUUQWr', port='3306')
+
+            mycursor = connection.cursor()
+            print('ss')
+            query  =  "SELECT password,rollno from user "
+            mycursor.execute(query)
+            for(password,rollno) in mycursor:
+                if password == password and rollno == rollno:
+                    login = True
+                    break
+                else:
+                    login = False
+
+            if login ==True:
+                print("Logged in sucessfully with",rollno)
+
+            #
+            # result = mycursor.fetchall()
+            #
+            #
+            # if(len(result>0)):
+            #     mycursor.execute(query, val)
+            #     connection.commit()
+            #     print("User found")
+            # else:
+            #     print("wrong email or password")
+
+
+            # result = mycursor.fetchone()
+
+            # if result == None:
+            #     print("incorrect email and password")
+            #
+            #
+            # else:
+            #     print("logedin")
+            #     self.labelResult.setText("You are logged in")
+                mycursor.close()
+                connection.close()
+
+
+        except mc.Error as e:
+
+            self.labelResult.setText("Error")
 
     def createAccount(self):
         self.loginframe.setVisible(False)
@@ -60,8 +107,10 @@ class Login(QDialog):
             email = self.email.text()
             password = self.password_2.text()
             rollno = self.rollno_2.text()
-            mySql_Create_Table_Query = " insert into user (name,email,password,rollno) VALUES(%s,%s,%s,%s)"
-            value =(name,email,password,rollno)
+            # type = self.type_2.text()
+            photo = self.photolbl.text()
+            mySql_Create_Table_Query = " insert into user (name,email,password,rollno,photo) VALUES(%s,%s,%s,%s,%s)"
+            value =(name,email,password,rollno,photo)
             if(name=='' or email=='' or password=='' or rollno==''):
                 m = QMessageBox.about(self, "warning","Pls fill all data")
 
