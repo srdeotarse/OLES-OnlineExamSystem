@@ -11,6 +11,7 @@ class Login(QDialog):
     def __init__(self):
         super(Login,self).__init__()
         loadUi("login.ui",self)
+        self.setWindowTitle("OLES - Online Exam System")
         self.signframe.setVisible(False)
         self.loginbtn.clicked.connect(self.loginFunction)
         self.blur()
@@ -22,7 +23,11 @@ class Login(QDialog):
         rollno = self.rollno.text()
         password = self.password.text()
         print("Successfully logged in with rollno - ",rollno,"and password - ",password)
-        self.connectDB()
+        #self.connectDB()
+        mainwindow = Application()
+        widgets.addWidget(mainwindow)
+        widgets.setCurrentIndex(widgets.currentIndex()+1)
+
 
     def createAccount(self):
         self.loginframe.setVisible(False)
@@ -59,12 +64,24 @@ class Login(QDialog):
             if connection.is_connected():
                 cursor.close()
                 connection.close()
-                print("MySQL connection is closed")     
+                print("MySQL connection is closed")
+
+class Application(QMainWindow):
+    def __init__(self):
+        super(Application,self).__init__()
+        loadUi("application.ui",self)
+        self.setWindowTitle("OLES - Online Exam System")
+        self.blur()
+
+    def blur(self):	
+        self.blur_effect = QGraphicsBlurEffect()
+        self.blur_effect.setBlurRadius(30) 
+        self.blurlbl.setGraphicsEffect(self.blur_effect)
 
 app = QApplication(sys.argv)
-mainwindow = Login()
+loginwindow = Login()
 widgets = QtWidgets.QStackedWidget()
-widgets.addWidget(mainwindow)
+widgets.addWidget(loginwindow)
 widgets.setFixedWidth(1200)
 widgets.setFixedHeight(800)
 widgets.show()
