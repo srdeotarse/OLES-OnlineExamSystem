@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1200</width>
-    <height>800</height>
+    <width>1198</width>
+    <height>822</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -702,11 +702,76 @@ QPushButton:hover { background: qlineargradient( x1:0 y1:0, x2:1 y2:0, stop:1 #0
      </size>
     </property>
    </widget>
+   <widget class="QLineEdit" name="rollno_3">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>200</y>
+      <width>401</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>-1</pointsize>
+     </font>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::DefaultContextMenu</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit{ background-color:rgba(255,255,255,0.6);
+border: 1px solid gray;
+border-radius: 5px;
+padding: 0 8px;
+selection-background-color: gray;
+font-size: 25px;}
+QLineEdit:focus { background-color:rgba(255,255 255,0.8);}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="frame">
+     <bool>false</bool>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="readOnly">
+     <bool>false</bool>
+    </property>
+    <property name="placeholderText">
+     <string>Roll No.</string>
+    </property>
+    <property name="clearButtonEnabled">
+     <bool>false</bool>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>400</x>
+     <y>150</y>
+     <width>181</width>
+     <height>161</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>img/logo-oles.png</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
   </widget>
   <zorder>backgroundlbl</zorder>
   <zorder>blurlbl</zorder>
   <zorder>loginframe</zorder>
   <zorder>signframe</zorder>
+  <zorder>label</zorder>
  </widget>
  <resources/>
  <connections/>
