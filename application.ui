@@ -74,13 +74,17 @@ background: rgba(255,255,255,0.7);}</string>
      <property name="layoutDirection">
       <enum>Qt::LeftToRight</enum>
      </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
      <property name="styleSheet">
       <string notr="true">#dashboardbtn{
 text-align:left;
-padding-left:20px;}</string>
+padding-left:20px;}
+</string>
      </property>
      <property name="text">
-      <string>  Dashboard</string>
+      <string notr="true">  Dashboard</string>
      </property>
      <property name="icon">
       <iconset>
@@ -91,6 +95,15 @@ padding-left:20px;}</string>
        <width>20</width>
        <height>20</height>
       </size>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <property name="autoDefault">
+      <bool>true</bool>
      </property>
      <property name="default">
       <bool>false</bool>
@@ -116,10 +129,14 @@ padding-left:20px;}</string>
      <property name="layoutDirection">
       <enum>Qt::LeftToRight</enum>
      </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
      <property name="styleSheet">
       <string notr="true">#resultsbtn{
 text-align:left;
-padding-left:20px;}</string>
+padding-left:20px;
+background:rgba(255,255,255,0.1);}</string>
      </property>
      <property name="text">
       <string>  Results</string>
@@ -135,6 +152,9 @@ padding-left:20px;}</string>
       </size>
      </property>
      <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="autoDefault">
       <bool>false</bool>
      </property>
      <property name="flat">
@@ -158,10 +178,14 @@ padding-left:20px;}</string>
      <property name="layoutDirection">
       <enum>Qt::LeftToRight</enum>
      </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
      <property name="styleSheet">
       <string notr="true">#feedbackbtn{
 text-align:left;
-padding-left:20px}</string>
+padding-left:20px;
+background:rgba(255,255,255,0.0);}</string>
      </property>
      <property name="text">
       <string>  Feedback</string>
@@ -175,6 +199,9 @@ padding-left:20px}</string>
        <width>20</width>
        <height>20</height>
       </size>
+     </property>
+     <property name="autoDefault">
+      <bool>false</bool>
      </property>
      <property name="flat">
       <bool>true</bool>
@@ -197,10 +224,14 @@ padding-left:20px}</string>
      <property name="layoutDirection">
       <enum>Qt::LeftToRight</enum>
      </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
      <property name="styleSheet">
       <string notr="true">#settingsbtn{
 text-align:left;
-padding-left:20px;}</string>
+padding-left:20px;
+background:rgba(255,255,255,0.0);}</string>
      </property>
      <property name="text">
       <string>  Settings</string>
@@ -214,6 +245,9 @@ padding-left:20px;}</string>
        <width>20</width>
        <height>20</height>
       </size>
+     </property>
+     <property name="autoDefault">
+      <bool>false</bool>
      </property>
      <property name="flat">
       <bool>true</bool>
@@ -236,10 +270,14 @@ padding-left:20px;}</string>
      <property name="layoutDirection">
       <enum>Qt::LeftToRight</enum>
      </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
      <property name="styleSheet">
       <string notr="true">#createexambtn{
 text-align:left;
-padding-left:20px;}</string>
+padding-left:20px;
+background:rgba(255,255,255,0.0);}</string>
      </property>
      <property name="text">
       <string>  Create Exam</string>
@@ -253,6 +291,9 @@ padding-left:20px;}</string>
        <width>20</width>
        <height>20</height>
       </size>
+     </property>
+     <property name="autoDefault">
+      <bool>false</bool>
      </property>
      <property name="flat">
       <bool>true</bool>
@@ -275,10 +316,14 @@ padding-left:20px;}</string>
      <property name="layoutDirection">
       <enum>Qt::LeftToRight</enum>
      </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
      <property name="styleSheet">
       <string notr="true">#adduserbtn{
 text-align:left;
-padding-left:20px;}
+padding-left:20px;
+background:rgba(255,255,255,0.0);}
 </string>
      </property>
      <property name="text">
@@ -293,6 +338,9 @@ padding-left:20px;}
        <width>20</width>
        <height>20</height>
       </size>
+     </property>
+     <property name="autoDefault">
+      <bool>false</bool>
      </property>
      <property name="flat">
       <bool>true</bool>
@@ -321,16 +369,22 @@ padding-left:20px;}
      <property name="geometry">
       <rect>
        <x>80</x>
-       <y>550</y>
+       <y>580</y>
        <width>80</width>
        <height>80</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
      <property name="text">
-      <string>User Photo</string>
+      <string/>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
      </property>
     </widget>
-    <widget class="QLabel" name="username">
+    <widget class="QLabel" name="userrollno">
      <property name="geometry">
       <rect>
        <x>20</x>
@@ -339,6 +393,32 @@ padding-left:20px;}
        <height>30</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>User RollNo</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="username">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>710</y>
+       <width>200</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
      <property name="text">
       <string>User Name</string>
      </property>
@@ -346,22 +426,57 @@ padding-left:20px;}
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
+    <widget class="QLabel" name="dashboardbtnlbl">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>160</y>
+       <width>200</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
     <widget class="QLabel" name="usertype">
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>730</y>
+       <y>760</y>
        <width>200</width>
-       <height>30</height>
+       <height>31</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <pointsize>11</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
      <property name="text">
-      <string>User Type</string>
+      <string>User Name</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
+    <zorder>dashboardbtnlbl</zorder>
+    <zorder>dashboardbtn</zorder>
+    <zorder>resultsbtn</zorder>
+    <zorder>feedbackbtn</zorder>
+    <zorder>settingsbtn</zorder>
+    <zorder>createexambtn</zorder>
+    <zorder>adduserbtn</zorder>
+    <zorder>label</zorder>
+    <zorder>userphoto</zorder>
+    <zorder>userrollno</zorder>
+    <zorder>username</zorder>
+    <zorder>usertype</zorder>
    </widget>
    <widget class="QFrame" name="mainmenu">
     <property name="geometry">
@@ -382,6 +497,519 @@ background: rgba(255,255,255,0.3);}</string>
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
+    <widget class="QFrame" name="dashboardframe">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>950</width>
+       <height>800</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QFrame" name="frame">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>30</y>
+        <width>890</width>
+        <height>330</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">#frame{
+background: rgba(255,255,255,0.4);
+border-radius:20px;}</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QTableWidget" name="currentexams">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>100</y>
+         <width>821</width>
+         <height>251</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QTableWidget{
+background: transparent;}
+
+QTableWidget::item {
+ border:1px solid #000;
+text-align:center;}</string>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAsNeeded</enum>
+       </property>
+       <property name="sizeAdjustPolicy">
+        <enum>QAbstractScrollArea::AdjustToContents</enum>
+       </property>
+       <property name="showGrid">
+        <bool>true</bool>
+       </property>
+       <property name="gridStyle">
+        <enum>Qt::SolidLine</enum>
+       </property>
+       <property name="sortingEnabled">
+        <bool>false</bool>
+       </property>
+       <property name="columnCount">
+        <number>8</number>
+       </property>
+       <attribute name="horizontalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
+       <attribute name="horizontalHeaderHighlightSections">
+        <bool>true</bool>
+       </attribute>
+       <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+        <bool>true</bool>
+       </attribute>
+       <attribute name="horizontalHeaderStretchLastSection">
+        <bool>true</bool>
+       </attribute>
+       <attribute name="verticalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+      </widget>
+      <widget class="QLabel" name="label_2">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>20</y>
+         <width>300</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>20</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Current Exams</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_9">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>70</y>
+         <width>900</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>   Exam ID          Name            Date        Start Time   End Time         Type             Dept       Total Marks      </string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_2">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>440</y>
+        <width>890</width>
+        <height>330</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">#frame_2{
+background: rgba(255,255,255,0.4);
+border-radius:20px;}</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QTableWidget" name="upcomingexams">
+       <property name="geometry">
+        <rect>
+         <x>50</x>
+         <y>110</y>
+         <width>821</width>
+         <height>221</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QTableWidget{
+background: transparent;}
+
+QTableWidget::item {
+ border:1px solid #000;
+text-align:center;}</string>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAsNeeded</enum>
+       </property>
+       <property name="sizeAdjustPolicy">
+        <enum>QAbstractScrollArea::AdjustToContents</enum>
+       </property>
+       <property name="showGrid">
+        <bool>true</bool>
+       </property>
+       <property name="gridStyle">
+        <enum>Qt::SolidLine</enum>
+       </property>
+       <property name="sortingEnabled">
+        <bool>false</bool>
+       </property>
+       <property name="columnCount">
+        <number>8</number>
+       </property>
+       <attribute name="horizontalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
+       <attribute name="horizontalHeaderHighlightSections">
+        <bool>true</bool>
+       </attribute>
+       <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+        <bool>true</bool>
+       </attribute>
+       <attribute name="horizontalHeaderStretchLastSection">
+        <bool>true</bool>
+       </attribute>
+       <attribute name="verticalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+       <column/>
+      </widget>
+      <widget class="QLabel" name="label_10">
+       <property name="geometry">
+        <rect>
+         <x>50</x>
+         <y>70</y>
+         <width>900</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>   Exam ID          Name            Date        Start Time   End Time         Type             Dept       Total Marks      </string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_3">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>20</y>
+         <width>300</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>20</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Upcoming Exams</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QPushButton" name="startexambtn">
+      <property name="geometry">
+       <rect>
+        <x>720</x>
+        <y>375</y>
+        <width>200</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">#startexambtn{
+color:white;
+background:#4CAF50;
+border:none;
+border-radius:10px;}</string>
+      </property>
+      <property name="text">
+       <string>  Start Exam</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>img/startexam-white.png</normaloff>img/startexam-white.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QFrame" name="resultsframe">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>950</width>
+       <height>800</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QListView" name="results">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>30</y>
+        <width>890</width>
+        <height>740</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">#results{
+background: rgba(255,255,255,0.4);
+border-radius:20px;}</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_4">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>50</y>
+        <width>200</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>20</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Results</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QFrame" name="feedbackframe">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>30</y>
+       <width>890</width>
+       <height>730</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">#feedbackframe{
+background: rgba(255,255,255,0.4);
+border-radius:20px;}</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QLabel" name="label_5">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>20</y>
+        <width>200</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>20</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Feedback</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QFrame" name="settingsframe">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>30</y>
+       <width>890</width>
+       <height>730</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">#settingsframe{
+background: rgba(255,255,255,0.4);
+border-radius:20px;}</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QLabel" name="label_6">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>20</y>
+        <width>200</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>20</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Settings</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QFrame" name="adduserframe">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>30</y>
+       <width>890</width>
+       <height>730</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">#adduserframe{
+background: rgba(255,255,255,0.4);
+border-radius:20px;}</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QLabel" name="label_7">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>20</y>
+        <width>200</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>20</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Add User</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QFrame" name="createframe">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>30</y>
+       <width>890</width>
+       <height>730</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">#createframe{
+background: rgba(255,255,255,0.4);
+border-radius:20px;}</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QLabel" name="label_8">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>20</y>
+        <width>200</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>20</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Create Exam</string>
+      </property>
+     </widget>
+    </widget>
+    <zorder>resultsframe</zorder>
+    <zorder>feedbackframe</zorder>
+    <zorder>settingsframe</zorder>
+    <zorder>adduserframe</zorder>
+    <zorder>createframe</zorder>
+    <zorder>dashboardframe</zorder>
    </widget>
   </widget>
  </widget>
