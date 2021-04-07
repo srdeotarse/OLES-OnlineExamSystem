@@ -219,14 +219,33 @@ background: rgba(255,255,255,0.7);}</string>
       </property>
      </layout>
     </widget>
+    <widget class="QLabel" name="webcam">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>680</y>
+       <width>400</width>
+       <height>250</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Webcam Stream Preview</string>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
    </widget>
    <widget class="QFrame" name="informationframe">
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>30</y>
+      <y>100</y>
       <width>1410</width>
-      <height>1020</height>
+      <height>950</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -240,24 +259,6 @@ border-radius:20px;}</string>
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="QLabel" name="label_6">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
-       <y>40</y>
-       <width>251</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>16</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Exam Information</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="startexambtn_4">
      <property name="geometry">
       <rect>
@@ -298,9 +299,9 @@ border-radius:10px;}</string>
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>30</y>
+      <y>100</y>
       <width>1410</width>
-      <height>1020</height>
+      <height>950</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -314,29 +315,11 @@ border-radius:20px;}</string>
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="QLabel" name="label_7">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
-       <y>40</y>
-       <width>251</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>16</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Exam Panel</string>
-     </property>
-    </widget>
     <widget class="QFrame" name="questionframe">
      <property name="geometry">
       <rect>
        <x>40</x>
-       <y>100</y>
+       <y>30</y>
        <width>1330</width>
        <height>300</height>
       </rect>
@@ -375,9 +358,9 @@ border-radius:20px;}</string>
      <property name="geometry">
       <rect>
        <x>40</x>
-       <y>430</y>
+       <y>359</y>
        <width>1330</width>
-       <height>500</height>
+       <height>571</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -509,11 +492,175 @@ border-radius:10px;}</string>
      </property>
     </widget>
     <zorder>answerframe</zorder>
-    <zorder>label_7</zorder>
     <zorder>questionframe</zorder>
     <zorder>startexambtn</zorder>
     <zorder>startexambtn_2</zorder>
     <zorder>startexambtn_3</zorder>
+   </widget>
+   <widget class="QFrame" name="examdetailsframe">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>30</y>
+      <width>1410</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#examdetailsframe{
+background: rgba(255,255,255,0.4);
+border-radius:20px;}</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="label_9">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>10</y>
+       <width>141</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Exam ID -</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="examidlbl">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>10</y>
+       <width>141</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>1</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_11">
+     <property name="geometry">
+      <rect>
+       <x>350</x>
+       <y>10</y>
+       <width>171</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Exam Name -</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="examnamelbl">
+     <property name="geometry">
+      <rect>
+       <x>520</x>
+       <y>10</y>
+       <width>141</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>COA</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_13">
+     <property name="geometry">
+      <rect>
+       <x>780</x>
+       <y>10</y>
+       <width>151</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Exam Type - </string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="examypelbl">
+     <property name="geometry">
+      <rect>
+       <x>940</x>
+       <y>10</y>
+       <width>141</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>IA2</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_15">
+     <property name="geometry">
+      <rect>
+       <x>1150</x>
+       <y>10</y>
+       <width>161</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Department -</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="examdeptlbl">
+     <property name="geometry">
+      <rect>
+       <x>1320</x>
+       <y>10</y>
+       <width>141</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>IT</string>
+     </property>
+    </widget>
    </widget>
   </widget>
  </widget>

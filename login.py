@@ -250,6 +250,10 @@ class Application(QMainWindow,Login):
         widgets.setCurrentIndex(widgets.currentIndex()+1)
         widgets.showFullScreen()
 
+        # rows = sorted(set(index.row() for index in self.currentexams.selectedIndexes()))
+        # for row in rows:
+        #     self.examQuesTablename = (self.createdexams.model().data(self.createdexams.model().index(row, 0)),self.createdexams.model().data(self.createdexams.model().index(row, 1)),self.createdexams.model().data(self.createdexams.model().index(row, 5)),self.createdexams.model().data(self.createdexams.model().index(row, 6)))
+
     def createNewExam(self):
         examname = self.nameofexamlbl.text()
         examtype = self.examtypelbl.text()
@@ -273,7 +277,7 @@ class Application(QMainWindow,Login):
         myresult = cursor.fetchone()
 
         examQuesTablename = str(myresult[0])+examname+examtype+department;
-        sql2 = "CREATE TABLE {} ( `quesNo` VARCHAR(20) NOT NULL ,`shuffledNo` VARCHAR(20) NULL , `question` LONGBLOB NOT NULL , `type` VARCHAR(255) NOT NULL , `option1` VARCHAR(255) NULL , `option2` VARCHAR(255) NULL , `option3` VARCHAR(255) NULL , `option4` VARCHAR(255) NULL , `option5` VARCHAR(255) NULL ,`marks` VARCHAR(20) NOT NULL , `correctAns` VARCHAR(255) NOT NULL , PRIMARY KEY (`quesNo`)) ENGINE = InnoDB".format(examQuesTablename)
+        sql2 = "CREATE TABLE {} ( `quesNo` VARCHAR(20) NOT NULL ,`shuffledNo` VARCHAR(20) NULL , `question` LONGBLOB NOT NULL , `type` VARCHAR(255) NOT NULL , `option1` VARCHAR(255) NULL , `option2` VARCHAR(255) NULL , `option3` VARCHAR(255) NULL , `option4` VARCHAR(255) NULL , `option5` VARCHAR(255) NULL ,`marks` VARCHAR(20) NOT NULL , `correctAns` VARCHAR(255) NOT NULL , PRIMARY KEY (`quesNo`))".format(examQuesTablename)
         cursor.execute(sql2)
 
     def setCreatedExams(self):
@@ -303,6 +307,7 @@ class Application(QMainWindow,Login):
         self.addansbtn.clicked.connect(self.addAnstoCreatedExam)
         self.quesphotoaddresslbl.setVisible(False)
         self.quesconfirmbtn.clicked.connect(self.addQuestoCreatedExam)
+        self.addquesexitbtn.clicked.connect(self.exitAddQuesPanel)
 
     def getquesphoto(self):
         fname, _ = QFileDialog.getOpenFileName(self, 'Open file','c:\\',"Image files (*.jpg *.png)",options=QFileDialog.DontUseNativeDialog)
@@ -336,12 +341,27 @@ class Application(QMainWindow,Login):
             for i in range(len(answers),5):
                 answers = answers + ("",)
         print("Answers - ",answers)
-        sql = "insert into {}(quesNo,question,type,marks,correctAns,option1,option2,option3,option4,option5) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)".format(examQuesTablename.lower())
+        sql = "insert into {}(quesNo,question,type,option1,option2,option3,option4,option5,marks,correctAns) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)".format(examQuesTablename.lower())
         print(sql)
-        values = (quesno,BinaryData,questype,marks,correctans)+answers
-        print(values)        
-        cursor.execute(sql,values)
+        value = (quesno,BinaryData,questype,answers[0],answers[1],answers[2],answers[3],answers[4],marks,correctans)        
+        cursor.execute(sql,value)
+        connection.commit()
+        quesno = str(int(quesno)+1)
+        self.quesnolbl.setText(quesno)
+        self.quesphotolbl.setPixmap(QPixmap())
+        self.quesmarkslbl.setText("")
+        self.correctanslbl.setText("")
+        for i in reversed(range(self.verticalLayoutAns.count())): 
+            self.verticalLayoutAns.removeWidget(self.verticalLayoutAns.itemAt(i).widget())
 
+    def exitAddQuesPanel(self):
+        self.createframe_2.setVisible(True)
+        self.createframe_3.setVisible(True)
+        self.addquesframe.setVisible(False)
+        self.examtypelbl.setText("")
+        self.deptlbl.setText("")
+        self.nameofexamlbl.setText("")
+        self.totalmarkslbl.setText("")
 
 class Exam(QMainWindow,Login):
     def __init__(self,rollNo):
@@ -374,7 +394,10 @@ class Exam(QMainWindow,Login):
         self.username_2.setText(myresult[2])
         self.usertype_2.setText(myresult[4])
 
+        #self.examidlbl.setText(examQuesTablename[0])
+
     def setQuesNo(self):
+        sql = ""
         names = ['1','2','3','4','5','6','7','8','9','1','2','3','4','5','6','7','8','9']
 
         positions = [(i,j) for i in range(1,8) for j in range(1,5)]
@@ -405,6 +428,7 @@ class Exam(QMainWindow,Login):
 
 app = QApplication(sys.argv)
 loginwindow = Login('dummy')
+#applicationwindow = Application('dummy')
 widgets = QtWidgets.QStackedWidget()
 widgets.addWidget(loginwindow)
 widgets.setMinimumWidth(1200)
