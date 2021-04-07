@@ -95,14 +95,14 @@ background: rgba(255,255,255,0.7);}</string>
      <property name="geometry">
       <rect>
        <x>160</x>
-       <y>950</y>
+       <y>960</y>
        <width>281</width>
        <height>30</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>16</pointsize>
+       <pointsize>14</pointsize>
       </font>
      </property>
      <property name="text">
@@ -116,14 +116,14 @@ background: rgba(255,255,255,0.7);}</string>
      <property name="geometry">
       <rect>
        <x>160</x>
-       <y>990</y>
+       <y>1000</y>
        <width>281</width>
        <height>41</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>16</pointsize>
+       <pointsize>14</pointsize>
       </font>
      </property>
      <property name="text">
@@ -144,7 +144,7 @@ background: rgba(255,255,255,0.7);}</string>
      </property>
      <property name="font">
       <font>
-       <pointsize>11</pointsize>
+       <pointsize>9</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -167,7 +167,7 @@ background: rgba(255,255,255,0.7);}</string>
      </property>
      <property name="font">
       <font>
-       <pointsize>16</pointsize>
+       <pointsize>14</pointsize>
       </font>
      </property>
      <property name="text">
@@ -188,7 +188,7 @@ background: rgba(255,255,255,0.7);}</string>
      </property>
      <property name="font">
       <font>
-       <pointsize>16</pointsize>
+       <pointsize>14</pointsize>
       </font>
      </property>
      <property name="text">
@@ -219,6 +219,301 @@ background: rgba(255,255,255,0.7);}</string>
       </property>
      </layout>
     </widget>
+   </widget>
+   <widget class="QFrame" name="informationframe">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>30</y>
+      <width>1410</width>
+      <height>1020</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#informationframe{
+background: rgba(255,255,255,0.4);
+border-radius:20px;}</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="label_6">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>40</y>
+       <width>251</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Exam Information</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="startexambtn_4">
+     <property name="geometry">
+      <rect>
+       <x>1170</x>
+       <y>950</y>
+       <width>200</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">#startexambtn_4{
+color:white;
+background:#4CAF50;
+border:none;
+border-radius:10px;}</string>
+     </property>
+     <property name="text">
+      <string>Submit</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>C:/Users/srdeotarse/.designer/backup/img/startexam-white.png</normaloff>C:/Users/srdeotarse/.designer/backup/img/startexam-white.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="exampanel">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>30</y>
+      <width>1410</width>
+      <height>1020</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#exampanel{
+background: rgba(255,255,255,0.4);
+border-radius:20px;}</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="label_7">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>40</y>
+       <width>251</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Exam Panel</string>
+     </property>
+    </widget>
+    <widget class="QFrame" name="questionframe">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>100</y>
+       <width>1330</width>
+       <height>300</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">#questionframe{
+background: rgba(255,255,255,0.4);
+border-radius:20px;}</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QLabel" name="label_8">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>40</y>
+        <width>251</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Question</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QFrame" name="answerframe">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>430</y>
+       <width>1330</width>
+       <height>500</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">#answerframe{
+background: rgba(255,255,255,0.4);
+border-radius:20px;}</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QWidget" name="verticalLayoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>19</x>
+        <y>29</y>
+        <width>1291</width>
+        <height>451</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout"/>
+     </widget>
+    </widget>
+    <widget class="QPushButton" name="startexambtn">
+     <property name="geometry">
+      <rect>
+       <x>1170</x>
+       <y>950</y>
+       <width>200</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">#startexambtn{
+color:white;
+background:#4CAF50;
+border:none;
+border-radius:10px;}</string>
+     </property>
+     <property name="text">
+      <string>  Start Exam</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>C:/Users/srdeotarse/.designer/backup/img/startexam-white.png</normaloff>C:/Users/srdeotarse/.designer/backup/img/startexam-white.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="startexambtn_2">
+     <property name="geometry">
+      <rect>
+       <x>940</x>
+       <y>950</y>
+       <width>200</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">#startexambtn{
+color:white;
+background:#4CAF50;
+border:none;
+border-radius:10px;}</string>
+     </property>
+     <property name="text">
+      <string>Next</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>C:/Users/srdeotarse/.designer/backup/img/startexam-white.png</normaloff>C:/Users/srdeotarse/.designer/backup/img/startexam-white.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="startexambtn_3">
+     <property name="geometry">
+      <rect>
+       <x>710</x>
+       <y>950</y>
+       <width>200</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">#startexambtn{
+color:white;
+background:#4CAF50;
+border:none;
+border-radius:10px;}</string>
+     </property>
+     <property name="text">
+      <string>Mark Answer</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>C:/Users/srdeotarse/.designer/backup/img/startexam-white.png</normaloff>C:/Users/srdeotarse/.designer/backup/img/startexam-white.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
+    </widget>
+    <zorder>answerframe</zorder>
+    <zorder>label_7</zorder>
+    <zorder>questionframe</zorder>
+    <zorder>startexambtn</zorder>
+    <zorder>startexambtn_2</zorder>
+    <zorder>startexambtn_3</zorder>
    </widget>
   </widget>
  </widget>
