@@ -818,6 +818,41 @@ border-radius:10px;}</string>
        </size>
       </property>
      </widget>
+     <widget class="QPushButton" name="startproctoringbtn">
+      <property name="geometry">
+       <rect>
+        <x>469</x>
+        <y>375</y>
+        <width>211</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">#startproctoringbtn{
+color:white;
+background:#4CAF50;
+border:none;
+border-radius:10px;}</string>
+      </property>
+      <property name="text">
+       <string>Start Proctoring</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>img/startexam-white.png</normaloff>img/startexam-white.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+     </widget>
     </widget>
     <widget class="QFrame" name="resultsframe">
      <property name="geometry">
@@ -2165,12 +2200,65 @@ border-radius:10px;}</string>
       </widget>
      </widget>
     </widget>
+    <widget class="QFrame" name="teacherdashboardframe">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>30</y>
+       <width>890</width>
+       <height>740</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">#teacherdashboardframe{
+background: rgba(255,255,255,0.4);
+border-radius:20px;}</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QLabel" name="label_21">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>20</y>
+        <width>200</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Proctoring</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="student1lbl">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>70</y>
+        <width>400</width>
+        <height>250</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </widget>
     <zorder>resultsframe</zorder>
     <zorder>feedbackframe</zorder>
     <zorder>adduserframe</zorder>
-    <zorder>dashboardframe</zorder>
     <zorder>settingsframe</zorder>
     <zorder>createframe</zorder>
+    <zorder>dashboardframe</zorder>
+    <zorder>teacherdashboardframe</zorder>
    </widget>
   </widget>
  </widget>

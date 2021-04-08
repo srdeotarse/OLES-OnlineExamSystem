@@ -259,12 +259,12 @@ border-radius:20px;}</string>
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="QPushButton" name="startexambtn_4">
+    <widget class="QPushButton" name="finalstartexambtn">
      <property name="geometry">
       <rect>
-       <x>1170</x>
-       <y>950</y>
-       <width>200</width>
+       <x>980</x>
+       <y>790</y>
+       <width>231</width>
        <height>51</height>
       </rect>
      </property>
@@ -274,18 +274,18 @@ border-radius:20px;}</string>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">#startexambtn_4{
+      <string notr="true">#addquesexitbtn{
 color:white;
 background:#4CAF50;
 border:none;
 border-radius:10px;}</string>
      </property>
      <property name="text">
-      <string>Submit</string>
+      <string>Start Exam</string>
      </property>
      <property name="icon">
       <iconset>
-       <normaloff>C:/Users/srdeotarse/.designer/backup/img/startexam-white.png</normaloff>C:/Users/srdeotarse/.designer/backup/img/startexam-white.png</iconset>
+       <normaloff>img/startexam-white.png</normaloff>img/startexam-white.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -384,6 +384,41 @@ border-radius:20px;}</string>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout"/>
+     </widget>
+     <widget class="QPushButton" name="startexambtn_4">
+      <property name="geometry">
+       <rect>
+        <x>430</x>
+        <y>430</y>
+        <width>200</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">#startexambtn_4{
+color:white;
+background:#4CAF50;
+border:none;
+border-radius:10px;}</string>
+      </property>
+      <property name="text">
+       <string>Submit</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>C:/Users/srdeotarse/.designer/backup/img/startexam-white.png</normaloff>C:/Users/srdeotarse/.designer/backup/img/startexam-white.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
      </widget>
     </widget>
     <widget class="QPushButton" name="startexambtn">
@@ -662,6 +697,11 @@ border-radius:20px;}</string>
      </property>
     </widget>
    </widget>
+   <zorder>blurlbl</zorder>
+   <zorder>sidemenu</zorder>
+   <zorder>exampanel</zorder>
+   <zorder>examdetailsframe</zorder>
+   <zorder>informationframe</zorder>
   </widget>
  </widget>
  <resources/>
