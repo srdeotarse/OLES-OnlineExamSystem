@@ -243,9 +243,9 @@ background: rgba(255,255,255,0.7);}</string>
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>100</y>
+      <y>80</y>
       <width>1410</width>
-      <height>950</height>
+      <height>930</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -262,8 +262,8 @@ border-radius:20px;}</string>
     <widget class="QPushButton" name="finalstartexambtn">
      <property name="geometry">
       <rect>
-       <x>980</x>
-       <y>790</y>
+       <x>1120</x>
+       <y>820</y>
        <width>231</width>
        <height>51</height>
       </rect>
@@ -274,7 +274,7 @@ border-radius:20px;}</string>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">#addquesexitbtn{
+      <string notr="true">#finalstartexambtn{
 color:white;
 background:#4CAF50;
 border:none;
@@ -299,9 +299,9 @@ border-radius:10px;}</string>
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>100</y>
+      <y>80</y>
       <width>1410</width>
-      <height>950</height>
+      <height>930</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -321,7 +321,7 @@ border-radius:20px;}</string>
        <x>40</x>
        <y>30</y>
        <width>1330</width>
-       <height>300</height>
+       <height>271</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -358,9 +358,9 @@ border-radius:20px;}</string>
      <property name="geometry">
       <rect>
        <x>40</x>
-       <y>359</y>
+       <y>319</y>
        <width>1330</width>
-       <height>571</height>
+       <height>561</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -380,16 +380,16 @@ border-radius:20px;}</string>
         <x>19</x>
         <y>29</y>
         <width>1291</width>
-        <height>451</height>
+        <height>461</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout"/>
      </widget>
-     <widget class="QPushButton" name="startexambtn_4">
+     <widget class="QPushButton" name="submitexambtn">
       <property name="geometry">
        <rect>
-        <x>430</x>
-        <y>430</y>
+        <x>1110</x>
+        <y>500</y>
         <width>200</width>
         <height>51</height>
        </rect>
@@ -400,7 +400,7 @@ border-radius:20px;}</string>
        </font>
       </property>
       <property name="styleSheet">
-       <string notr="true">#startexambtn_4{
+       <string notr="true">#submitexambtn{
 color:white;
 background:#4CAF50;
 border:none;
@@ -421,122 +421,14 @@ border-radius:10px;}</string>
       </property>
      </widget>
     </widget>
-    <widget class="QPushButton" name="startexambtn">
-     <property name="geometry">
-      <rect>
-       <x>1170</x>
-       <y>950</y>
-       <width>200</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>14</pointsize>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">#startexambtn{
-color:white;
-background:#4CAF50;
-border:none;
-border-radius:10px;}</string>
-     </property>
-     <property name="text">
-      <string>  Start Exam</string>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>C:/Users/srdeotarse/.designer/backup/img/startexam-white.png</normaloff>C:/Users/srdeotarse/.designer/backup/img/startexam-white.png</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>20</width>
-       <height>20</height>
-      </size>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="startexambtn_2">
-     <property name="geometry">
-      <rect>
-       <x>940</x>
-       <y>950</y>
-       <width>200</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>14</pointsize>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">#startexambtn{
-color:white;
-background:#4CAF50;
-border:none;
-border-radius:10px;}</string>
-     </property>
-     <property name="text">
-      <string>Next</string>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>C:/Users/srdeotarse/.designer/backup/img/startexam-white.png</normaloff>C:/Users/srdeotarse/.designer/backup/img/startexam-white.png</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>20</width>
-       <height>20</height>
-      </size>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="startexambtn_3">
-     <property name="geometry">
-      <rect>
-       <x>710</x>
-       <y>950</y>
-       <width>200</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>14</pointsize>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">#startexambtn{
-color:white;
-background:#4CAF50;
-border:none;
-border-radius:10px;}</string>
-     </property>
-     <property name="text">
-      <string>Mark Answer</string>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>C:/Users/srdeotarse/.designer/backup/img/startexam-white.png</normaloff>C:/Users/srdeotarse/.designer/backup/img/startexam-white.png</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>20</width>
-       <height>20</height>
-      </size>
-     </property>
-    </widget>
     <zorder>answerframe</zorder>
     <zorder>questionframe</zorder>
-    <zorder>startexambtn</zorder>
-    <zorder>startexambtn_2</zorder>
-    <zorder>startexambtn_3</zorder>
    </widget>
    <widget class="QFrame" name="examdetailsframe">
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>30</y>
+      <y>20</y>
       <width>1410</width>
       <height>50</height>
      </rect>
@@ -697,10 +589,153 @@ border-radius:20px;}</string>
      </property>
     </widget>
    </widget>
+   <widget class="QFrame" name="warningdetailsframe">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>1020</y>
+      <width>1410</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#warningdetailsframe{
+background: rgba(255,255,255,0.4);
+border-radius:20px;}</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="label_10">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>10</y>
+       <width>121</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Warning -</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="warningdisplaylbl">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>10</y>
+       <width>351</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Pay attention to warnings</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_16">
+     <property name="geometry">
+      <rect>
+       <x>930</x>
+       <y>10</y>
+       <width>381</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">#label_16{
+color:red;}</string>
+     </property>
+     <property name="text">
+      <string>Major warnings remaining -</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="majorwarninglbl">
+     <property name="geometry">
+      <rect>
+       <x>1320</x>
+       <y>10</y>
+       <width>81</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">#majorwarninglbl{
+color:red;}
+</string>
+     </property>
+     <property name="text">
+      <string>10</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_17">
+     <property name="geometry">
+      <rect>
+       <x>530</x>
+       <y>10</y>
+       <width>331</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Minor warnings remaining -</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="minorwarninglbl">
+     <property name="geometry">
+      <rect>
+       <x>870</x>
+       <y>10</y>
+       <width>101</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>50</string>
+     </property>
+    </widget>
+   </widget>
    <zorder>blurlbl</zorder>
    <zorder>sidemenu</zorder>
-   <zorder>exampanel</zorder>
    <zorder>examdetailsframe</zorder>
+   <zorder>warningdetailsframe</zorder>
+   <zorder>exampanel</zorder>
    <zorder>informationframe</zorder>
   </widget>
  </widget>
