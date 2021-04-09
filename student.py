@@ -12,9 +12,18 @@ from PyQt5.QtWidgets import *
 from PyQt5.uic import loadUi
 import socket,cv2, pickle,struct
 import numpy as np
+import face_recognition
+import time
+from gaze_tracking import GazeTracking
+import keyboard
 
 connection = mysql.connector.connect(host='localhost', database='OnlineExamSystem', user='root', password='', port='3306')
 cursor = connection.cursor()
+#motion detection
+frameCount = 0
+fgbg = cv2.createBackgroundSubtractorMOG2(300, 400, True)
+#gaze tracking
+gaze = GazeTracking()
 
 class Login(QDialog):
     def __init__(self,master):
@@ -249,10 +258,11 @@ class Application(QMainWindow,Login):
 
     def startExam(self):
         self.rollNo = self.userrollno.text()
-        examwindow = Exam(self.rollNo)
+        examwindow = Exam(self.rollNo)            
         widgets.addWidget(examwindow)
         widgets.setCurrentIndex(widgets.currentIndex()+1)
-        widgets.showFullScreen()
+        widgets.showFullScreen()      
+
 
         # rows = sorted(set(index.row() for index in self.currentexams.selectedIndexes()))
         # for row in rows:
@@ -377,9 +387,12 @@ class Exam(QMainWindow,Login):
         self.setUserInfo()
         self.setQuesNo()
         self.exampanel.setVisible(False)
-        self.startexambtn_4.clicked.connect(self.showExamPanel)
         self.setAns()
         self.finalstartexambtn.clicked.connect(self.startExam)
+        self.submitexambtn.clicked.connect(self.submitExam)
+        #blocks all keys of keyboard
+        for i in range(150):
+            keyboard.block_key(i)
 
     def blur(self):	
         self.blur_effect = QGraphicsBlurEffect()
@@ -415,11 +428,7 @@ class Exam(QMainWindow,Login):
             button.setFont(QFont('', 20))
             # button.setDefault(True)
             button.setStyleSheet("background: rgba(255,255,255,0.75); border:none; border-radius:5px;")
-            self.gridLayout.addWidget(button, *position)
-
-    def showExamPanel(self):
-        self.exampanel.setVisible(True)
-        self.informationframe.setVisible(False)        
+            self.gridLayout.addWidget(button, *position)          
 
     def setAns(self):
         answers = ['abc','efg','hij','lmno']
@@ -436,17 +445,71 @@ class Exam(QMainWindow,Login):
         # connect its signal to the update_image slot
         self.thread.change_pixmap_signal.connect(self.update_image)
         # start the thread
-        self.thread.start()
+        self.thread.start() 
 
-    def closeEvent(self, event):
+        self.exampanel.setVisible(True)
+        self.informationframe.setVisible(False)        
+
+    def closeEvent(self):
         self.thread.stop()
-        event.accept()
+        #event.accept()   
 
     @pyqtSlot(np.ndarray)
     def update_image(self, cv_img):
-        """Updates the image_label with a new opencv image"""
+        """Updates the image_label with a new opencv image"""       
+
+        #face tracking
+        face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml') 
+        gray = cv2.cvtColor(cv_img, cv2.COLOR_BGR2GRAY)
+        faces = face_cascade.detectMultiScale(gray, 1.1, 4)
+        if len(faces) == 0:     
+            self.warningdisplaylbl.setText('Your face not found')
+            self.majorwarninglbl.setText(str(int(self.majorwarninglbl.text())-1))
+        for (x, y, w, h) in faces:
+            cv2.rectangle(cv_img, (x, y), (x + w, y + h), (255, 0, 0), 2)  
+
+        # motiondetection
+        global frameCount
+        frameCount += 1
+        # Resize the frame
+        resizedFrame = cv2.resize(cv_img, (0, 0), fx=2, fy=2)
+        cv_img = cv2.resize(cv_img, (0, 0), fx=1.3, fy=1.3)
+        # Get the foreground mask
+        fgmask = fgbg.apply(resizedFrame)
+
+        # Count all the non zero pixels within the mask
+        count = np.count_nonzero(fgmask)
+        print('Frame: %d, Pixel Count: %d' % (frameCount, count))
+
+        # Determine how many pixels do you want to detect to be considered "movement"
+        #if (frameCount > 1 and cou`nt > 5000):
+        if (frameCount > 1 and count > 5000):
+                self.warningdisplaylbl.setText('Do not move')
+                self.minorwarninglbl.setText(str(int(self.minorwarninglbl.text())-1))
+
+        # We send this frame to GazeTracking to analyze it
+        gaze.refresh(cv_img)
+        cv_img = gaze.annotated_frame()
+
+        if gaze.is_blinking():
+            self.warningdisplaylbl.setText('Blinking')
+        elif gaze.is_right():
+            self.warningdisplaylbl.setText('Looking Right')
+            self.minorwarninglbl.setText(str(int(self.minorwarninglbl.text())-1))
+        elif gaze.is_left():
+            self.warningdisplaylbl.setText('Looking Left')
+            self.minorwarninglbl.setText(str(int(self.minorwarninglbl.text())-1))
+        elif gaze.is_center():
+            self.warningdisplaylbl.setText('Looking Center')
+
+        # left_pupil = gaze.pupil_left_coords()
+        # right_pupil = gaze.pupil_right_coords()           
+
         qt_img = self.convert_cv_qt(cv_img)
         self.webcam.setPixmap(qt_img)
+
+        if(int(self.majorwarninglbl.text())<0 or int(self.minorwarninglbl.text())<0 ):
+            self.submitExam()
 
     def convert_cv_qt(self, cv_img):
         """Convert from an opencv image to QPixmap"""
@@ -456,6 +519,12 @@ class Exam(QMainWindow,Login):
         convert_to_Qt_format = QtGui.QImage(rgb_image.data, w, h, bytes_per_line, QtGui.QImage.Format_RGB888)
         p = convert_to_Qt_format.scaled(400, 250, Qt.KeepAspectRatio)
         return QPixmap.fromImage(p)
+
+    def submitExam(self):
+        widgets.setCurrentIndex(widgets.currentIndex()-1)
+        widgets.showNormal()
+        self.thread.stop()      
+    
 
 class VideoThread(QThread):
     change_pixmap_signal = pyqtSignal(np.ndarray)
@@ -473,19 +542,19 @@ class VideoThread(QThread):
         # capture from web cam
         cap = cv2.VideoCapture(0)
         
-        # Socket Accept
-        while True:            
-            while self._run_flag:
-                ret, cv_img = cap.read()
-                a = pickle.dumps(cv_img)
-                message = struct.pack("Q",len(a))+a
-                client_socket.sendall(message)
-                # cv2.imshow('TRANSMITTING VIDEO',cv_img)
-                # key = cv2.waitKey(1) & 0xFF
-                # if key ==ord('q'):
-                #     client_socket.close()
-                if ret:
-                    self.change_pixmap_signal.emit(cv_img)
+        # Socket Accept            
+        while self._run_flag:                              
+            ret, cv_img = cap.read()
+            a = pickle.dumps(cv_img)
+            message = struct.pack("Q",len(a))+a
+            self.sleep(1)
+            client_socket.sendall(message)
+            # cv2.imshow('TRANSMITTING VIDEO',cv_img)
+            # key = cv2.waitKey(1) & 0xFF
+            # if key ==ord('q'):
+            #     client_socket.close()
+            if ret:
+                self.change_pixmap_signal.emit(cv_img)
         # shut down capture system
         cap.release()
         

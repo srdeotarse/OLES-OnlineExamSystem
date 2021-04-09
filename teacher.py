@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.uic import loadUi
 import socket, cv2, pickle,struct
 import numpy as np
+import face_recognition
 
 connection = mysql.connector.connect(host='localhost', database='OnlineExamSystem', user='root', password='', port='3306')
 cursor = connection.cursor()
@@ -274,6 +275,7 @@ class Application(QMainWindow,Login):
     @pyqtSlot(np.ndarray)
     def update_image(self, cv_img):
         """Updates the image_label with a new opencv image"""
+        
         qt_img = self.convert_cv_qt(cv_img)
         self.student1lbl.setPixmap(qt_img)
 
@@ -456,9 +458,7 @@ class Exam(QMainWindow,Login):
             label.setFixedWidth(1280)
             label.setFont(QFont('',14))
             label.setStyleSheet("background: rgba(255,255,255,0.6);border-radius:5px;")
-            self.verticalLayout.addWidget(label)
-
-    #def startExam(self):    
+            self.verticalLayout.addWidget(label)    
 
 class VideoThread(QThread):
     change_pixmap_signal = pyqtSignal(np.ndarray)
