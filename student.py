@@ -24,6 +24,7 @@ frameCount = 0
 fgbg = cv2.createBackgroundSubtractorMOG2(300, 400, True)
 #gaze tracking
 gaze = GazeTracking()
+examQuesTablename = ()
 
 class Login(QDialog):
     def __init__(self,master):
@@ -257,16 +258,21 @@ class Application(QMainWindow,Login):
 
 
     def startExam(self):
+        global examQuesTablename
+        rows = sorted(set(index.row() for index in self.currentexams.selectedIndexes()))
+        for row in rows:
+            examQuesTablename = (self.currentexams.model().data(self.currentexams.model().index(row, 0)),self.currentexams.model().data(self.currentexams.model().index(row, 1)),self.currentexams.model().data(self.currentexams.model().index(row, 5)),self.currentexams.model().data(self.currentexams.model().index(row, 6))) 
+        print("examQuesTablename -",examQuesTablename)
+
         self.rollNo = self.userrollno.text()
         examwindow = Exam(self.rollNo)            
         widgets.addWidget(examwindow)
         widgets.setCurrentIndex(widgets.currentIndex()+1)
-        widgets.showFullScreen()      
+        widgets.showFullScreen()        
 
-
-        # rows = sorted(set(index.row() for index in self.currentexams.selectedIndexes()))
-        # for row in rows:
-        #     self.examQuesTablename = (self.createdexams.model().data(self.createdexams.model().index(row, 0)),self.createdexams.model().data(self.createdexams.model().index(row, 1)),self.createdexams.model().data(self.createdexams.model().index(row, 5)),self.createdexams.model().data(self.createdexams.model().index(row, 6)))    
+    def getExamQuesTablename(self):
+        global examQuesTablename 
+        return examQuesTablename 
 
     def createNewExam(self):
         examname = self.nameofexamlbl.text()
@@ -393,6 +399,9 @@ class Exam(QMainWindow,Login):
         #blocks all keys of keyboard
         for i in range(150):
             keyboard.block_key(i)
+        a = Application(rollNo)
+        examQuesTablename = a.getExamQuesTablename()
+        print("examQuesTablename -",examQuesTablename)
 
     def blur(self):	
         self.blur_effect = QGraphicsBlurEffect()
