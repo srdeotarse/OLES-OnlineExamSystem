@@ -4,7 +4,7 @@ import sys
 import mysql.connector
 from mysql.connector import Error
 from PIL import Image
-from PIL.ImageQt import ImageQt
+#from PIL.ImageQt import ImageQt
 from PyQt5 import QtGui, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -12,19 +12,23 @@ from PyQt5.QtWidgets import *
 from PyQt5.uic import loadUi
 import socket,cv2, pickle,struct
 import numpy as np
-import face_recognition
+#import face_recognition
 import time
 from gaze_tracking import GazeTracking
 import keyboard
+import random
+from fpdf import FPDF
+#import matplotlib.pyplot as plt
 
 connection = mysql.connector.connect(host='localhost', database='OnlineExamSystem', user='root', password='', port='3306')
-cursor = connection.cursor()
+cursor = connection.cursor(buffered=True)
 #motion detection
 frameCount = 0
 fgbg = cv2.createBackgroundSubtractorMOG2(300, 400, True)
 #gaze tracking
 gaze = GazeTracking()
 examQuesTablename = ()
+checkedans = {'0':None}
 
 class Login(QDialog):
     def __init__(self,master):
@@ -161,6 +165,7 @@ class Application(QMainWindow,Login):
         self.refreshbtn.clicked.connect(self.setCreatedExams) 
         self.addquesframe.setVisible(False)
         self.addquesbtn.clicked.connect(self.showAddQuesPanel)
+        self.printresultbtn.clicked.connect(self.printResult)
 
     def blur(self):	
         self.blur_effect = QGraphicsBlurEffect()
@@ -202,6 +207,8 @@ class Application(QMainWindow,Login):
         self.adduserframe.setVisible(False)
         self.settingsframe.setVisible(False)
         self.feedbackframe.setVisible(False)
+        self.showResultsTable()
+        
 
     def showFeedback(self):
         self.dashboardframe.setVisible(False)
@@ -244,7 +251,7 @@ class Application(QMainWindow,Login):
             self.currentexams.insertRow(row_number)
             for column_number, data in enumerate(row_data):
                 self.currentexams.setItem(row_number, column_number, QTableWidgetItem(str(data)))
-        self.currentexams.setSelectionBehavior(QTableView.SelectRows);
+        self.currentexams.setSelectionBehavior(QTableView.SelectRows)
 
 
         cursor.execute("SELECT srno,name,DATE_FORMAT(date,\"%d-%m-%Y\")AS Date,starttime,endtime,type,dept,totalmarks FROM exams where date > current_date")
@@ -254,14 +261,14 @@ class Application(QMainWindow,Login):
             self.upcomingexams.insertRow(row_number)
             for column_number, data in enumerate(row_data):
                 self.upcomingexams.setItem(row_number, column_number, QTableWidgetItem(str(data)))
-        self.upcomingexams.setSelectionBehavior(QTableView.SelectRows);
+        self.upcomingexams.setSelectionBehavior(QTableView.SelectRows)
 
 
     def startExam(self):
         global examQuesTablename
         rows = sorted(set(index.row() for index in self.currentexams.selectedIndexes()))
         for row in rows:
-            examQuesTablename = (self.currentexams.model().data(self.currentexams.model().index(row, 0)),self.currentexams.model().data(self.currentexams.model().index(row, 1)),self.currentexams.model().data(self.currentexams.model().index(row, 5)),self.currentexams.model().data(self.currentexams.model().index(row, 6))) 
+            examQuesTablename = (self.currentexams.model().data(self.currentexams.model().index(row, 0)),self.currentexams.model().data(self.currentexams.model().index(row, 1)),self.currentexams.model().data(self.currentexams.model().index(row, 5)),self.currentexams.model().data(self.currentexams.model().index(row, 6)),self.currentexams.model().data(self.currentexams.model().index(row, 2)),self.currentexams.model().data(self.currentexams.model().index(row, 3)),self.currentexams.model().data(self.currentexams.model().index(row, 4))) 
         print("examQuesTablename -",examQuesTablename)
 
         self.rollNo = self.userrollno.text()
@@ -383,6 +390,112 @@ class Application(QMainWindow,Login):
         self.nameofexamlbl.setText("")
         self.totalmarkslbl.setText("")
 
+    def showResultsTable(self):
+        cursor.execute("SELECT srno,name,type,dept FROM exams")
+        result = cursor.fetchall()
+        self.resultexams.setRowCount(0)
+        for row_number, row_data in enumerate(result):
+            sql = "SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'onlineexamsystem' AND TABLE_NAME = '{}' AND COLUMN_NAME = '{}'".format(str(result[row_number][0])+str(result[row_number][1]).lower()+str(result[row_number][2]).lower()+str(result[row_number][3]).lower(), "marked"+self.userrollno.text())
+            cursor.execute(sql)
+            existexam = cursor.fetchall()
+            if existexam:
+                sql1 ="SELECT srno,name,DATE_FORMAT(date,\"%d-%m-%Y\")AS Date,starttime,endtime,type,dept,totalmarks FROM exams where srno = {}".format(str(result[row_number][0]))
+                cursor.execute(sql1)
+                examdata = cursor.fetchall()
+                for row_number, row_data in enumerate(examdata):
+                    self.resultexams.insertRow(row_number)
+                    for column_number, data in enumerate(row_data):
+                        self.resultexams.setItem(row_number, column_number, QTableWidgetItem(str(data)))
+            connection.commit()
+        self.resultexams.setSelectionBehavior(QTableView.SelectRows)
+
+    def printResult(self):      
+        rows = sorted(set(index.row() for index in self.resultexams.selectedIndexes()))
+        examid = ""
+        examname = ""
+        examtype = ""
+        department = ""
+        for row in rows:
+            examid = self.resultexams.model().data(self.resultexams.model().index(row, 0))
+            examname = self.resultexams.model().data(self.resultexams.model().index(row, 1))
+            examtype = self.resultexams.model().data(self.resultexams.model().index(row, 5))
+            department = self.resultexams.model().data(self.resultexams.model().index(row, 6))
+        sql = "SELECT * FROM {}".format(examid+examname+examtype+department)
+        print("examtable -",examid+examname+examtype+department)
+        cursor.execute(sql)
+        quesans = cursor.fetchall()
+
+        pdf = FPDF()
+        pdf = FPDF(orientation='P', unit='mm', format='A4')
+        pdf.add_page()
+        pdf.set_font("Arial", size = 12)
+        # Effective page width, or just epw
+        epw = pdf.w - 2*pdf.l_margin
+        pdf.set_font("Arial",'B',16.0) 
+        pdf.cell(epw, 0.0, 'Result', align='L')
+        pdf.set_font("Arial", size = 10) 
+        pdf.ln(3.0)
+        pdf.cell(100, 10, 'Name - '+'Shivam Deotarse'+'   Roll No - '+'5019114', align='L')
+        pdf.ln(7.0)
+        pdf.cell(100, 10, 'Exam ID - '+'19'+'    Exam Name - '+'AT'+'    Exam Type - '+'IA2'+'   Department - '+'IT', align='L')
+        pdf.image('img\logo-oles-filled.png', x = 175, y = 7, w = 20, h = 20)
+        pdf.ln(5.0)
+
+        th = pdf.font_size
+        # Line break equivalent to 4 lines
+        pdf.ln(4*th)
+        
+        pdf.set_font('Times','B',14.0) 
+        pdf.cell(epw, 0.0, 'Attempted Responses', align='C')
+        pdf.set_font('Times','',10.0) 
+        pdf.ln(10)
+
+        pdf.set_font('Times','B',10.0)
+        pdf.cell(epw/26, 2*th, 'No', border=1, align='C')
+        pdf.cell(epw/1.5, 2*th, 'Question', border=1, align='C')
+        pdf.cell(epw/16, 2*th, 'Type', border=1, align='C')    
+        pdf.cell(epw/8, 2*th, 'Correct Ans', border=1, align='C')
+        pdf.cell(epw/8, 2*th, 'Response', border=1, align='C')
+        pdf.ln(2*th)
+
+        pdf.set_font('Times','',10.0)
+        
+        # Here we add more padding by passing 2*th as height
+        for row,row_data in enumerate(quesans):
+            # Enter data in colums
+            pdf.cell(epw/26, 7*th, str(quesans[row][0]), border=1)  
+            sql = "select question from {} where quesno = {}".format(examid+examname+examtype+department, str(quesans[row][0]))
+            cursor.execute(sql)
+            myresult = cursor.fetchone()[0]
+            StoreFilepath = "img/question{}.png".format(str(quesans[row][0]))
+            with open(StoreFilepath, "wb") as file:
+                file.write(myresult)
+                file.close() 
+            pdf.cell(epw/1.5, 7*th, '', border=1)     
+            pdf.image('img\question'+str(row+1)+'.png', x = 19, y = 33+(row+1)*25, w = 125, h = 20)        
+            pdf.cell(epw/16, 7*th, str(quesans[row][3]), border=1)    
+            pdf.cell(epw/8, 7*th, str(quesans[row][4]), border=1)
+            pdf.cell(epw/8, 7*th, str(quesans[row][5]), border=1)
+            pdf.ln(7*th)
+        
+        pdf.ln(20)        
+        pdf.set_font('Times','B',14.0) 
+        pdf.cell(epw, 0.0, 'Analysis', align='C')
+        pdf.set_font('Times','',10.0) 
+        pdf.ln(10)
+
+        
+        # fig = plt.figure()
+        # ax = fig.add_axes([0,0,1,1])
+        # langs = ['Correct Answers', 'Wrong Answers', 'Unattempted Answers']
+        # students = [23,17,35]
+        # ax.bar(langs,students)
+        # plt.savefig("img/analysis1.png")
+
+        # pdf.image('img\analysis1.png', x = 19, y = 300, w = 125, h = 125)
+        pdf.output("result.pdf")
+        
+
 class Exam(QMainWindow,Login):
     def __init__(self,rollNo):
         super(Exam,self).__init__(rollNo)
@@ -390,10 +503,8 @@ class Exam(QMainWindow,Login):
         self.setWindowTitle("OLES - Online Exam System")
         self.blur()
         self.userrollno_2.setText(rollNo)
-        self.setUserInfo()
-        self.setQuesNo()
+        self.setUserInfo()        
         self.exampanel.setVisible(False)
-        self.setAns()
         self.finalstartexambtn.clicked.connect(self.startExam)
         self.submitexambtn.clicked.connect(self.submitExam)
         #blocks all keys of keyboard
@@ -401,7 +512,14 @@ class Exam(QMainWindow,Login):
             keyboard.block_key(i)
         a = Application(rollNo)
         examQuesTablename = a.getExamQuesTablename()
-        print("examQuesTablename -",examQuesTablename)
+        self.examidlbl.setText(examQuesTablename[0])
+        self.examnamelbl.setText(examQuesTablename[1])
+        self.examtypelbl.setText(examQuesTablename[2])
+        self.examdeptlbl.setText(examQuesTablename[3])
+        self.examdatelbl.setText(examQuesTablename[4])
+        self.examtimelbl.setText(examQuesTablename[5]+"-"+examQuesTablename[6])
+        self.shuffleQues(examQuesTablename[0]+examQuesTablename[1]+examQuesTablename[2]+examQuesTablename[3])
+        self.setQuesNo(examQuesTablename[0]+examQuesTablename[1]+examQuesTablename[2]+examQuesTablename[3])
 
     def blur(self):	
         self.blur_effect = QGraphicsBlurEffect()
@@ -421,31 +539,74 @@ class Exam(QMainWindow,Login):
         self.username_2.setText(myresult[2])
         self.usertype_2.setText(myresult[4])
 
-        #self.examidlbl.setText(examQuesTablename[0])
+    def setQuesNo(self,examtable):
+        sql = "select shuffledNo from {}".format(examtable)
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        quesno = ()
+        for x in result:
+            quesno = quesno + (x[0],)
+        print("questions-",quesno)
 
-    def setQuesNo(self):
-        sql = ""
-        names = ['1','2','3','4','5','6','7','8','9','1','2','3','4','5','6','7','8','9']
-
-        positions = [(i,j) for i in range(1,8) for j in range(1,5)]
-
-        for position, name in zip(positions, names):
-            print("position=`{}`, name=`{}`".format(position, name))
-            button = QPushButton(name)
+        positions = [(i,j) for i in range(len(quesno)) for j in range(0,4)]
+        for position, ques in zip(positions, quesno):
+            #print("position=`{}`, ques=`{}`".format(position, quesno.index(ques)))
+            button = QPushButton("{}".format(quesno.index(ques)+1),self)
             button.setFixedHeight(70)
             button.setFixedWidth(70)
             button.setFont(QFont('', 20))
-            # button.setDefault(True)
             button.setStyleSheet("background: rgba(255,255,255,0.75); border:none; border-radius:5px;")
-            self.gridLayout.addWidget(button, *position)          
+            button.clicked.connect(lambda ch, ques=ques: self.getQues(ques,examtable,quesno))
+            self.gridLayout.addWidget(button, *position) 
+            checkedans[ques] = []   
+        print("Checked Ans -",checkedans)            
 
-    def setAns(self):
-        answers = ['abc','efg','hij','lmno']
-        for ans in answers:
-            label = QLabel(ans)
+    def setAns(self,fetchedans,type,checkedans,ques,quesno):
+        a = list(fetchedans)
+        random.shuffle(a)
+        answers = tuple(a)        
+        
+        if type == "mcq":
+            for ans in answers:
+                if ans is not None:
+                    label = QRadioButton(ans)
+                    label.setFixedWidth(1280)
+                    label.setFont(QFont('',14))
+                    label.setStyleSheet("background: rgba(255,255,255,0.6);border-radius:5px; padding:10px 10px")
+                    if len(checkedans[str(quesno)]):
+                        if ans == checkedans[str(quesno)][0]:
+                            label.setChecked(True)
+                    self.verticalLayout.addWidget(label)
+        elif type == "multi":
+            for ans in answers:
+                if ans is not None:
+                    label = QCheckBox(ans)
+                    label.setFixedWidth(1280)
+                    label.setFont(QFont('',14))
+                    label.setStyleSheet("background: rgba(255,255,255,0.6);border-radius:5px; padding:10px 10px")
+                    if len(checkedans[str(quesno)]):
+                        for check in checkedans[str(quesno)]:
+                            if ans == check:
+                                label.setChecked(True)
+                    self.verticalLayout.addWidget(label)
+        elif type == "logical":
+            for ans in answers:
+                if ans is not None:
+                    label = QRadioButton(ans)
+                    label.setFixedWidth(1280)
+                    label.setFont(QFont('',14))
+                    label.setStyleSheet("background: rgba(255,255,255,0.6);border-radius:5px; padding:10px 10px")
+                    if len(checkedans[str(quesno)]):
+                        if ans == checkedans[str(quesno)][0]:
+                            label.setChecked(True)
+                    self.verticalLayout.addWidget(label)
+        elif type == "numerical":            
+            label = QTextEdit("Type your integer answer -")
             label.setFixedWidth(1280)
             label.setFont(QFont('',14))
-            label.setStyleSheet("background: rgba(255,255,255,0.6);border-radius:5px;")
+            label.setStyleSheet("background: rgba(255,255,255,0.6);border-radius:5px; padding:10px 10px")
+            if len(checkedans[str(quesno)]):
+                label.setText(checkedans[str(quesno)][0])
             self.verticalLayout.addWidget(label)
 
     def startExam(self):
@@ -457,7 +618,58 @@ class Exam(QMainWindow,Login):
         self.thread.start() 
 
         self.exampanel.setVisible(True)
-        self.informationframe.setVisible(False)        
+        self.informationframe.setVisible(False) 
+
+    def shuffleQues(self,examtable):
+        cursor.execute("select quesNo from {}".format(examtable))
+        result = cursor.fetchall()
+        ques = ()
+        for x in result:
+            ques = ques + (x[0],)
+        l = list(ques)
+        random.shuffle(l)
+        quesnos = tuple(l)
+        print("shuffledQues -",quesnos)
+        for i in range(1,len(quesnos)+1):
+            sql = "update {} set shuffledNo = %s where quesNo = %s".format(examtable)
+            value = (quesnos[i-1],i)
+            print("values -",value)
+            cursor.execute(sql,value)
+            connection.commit() 
+
+    def getQues(self,ques,examtable,quesno):
+        answidgets = (self.verticalLayout.itemAt(i).widget() for i in range(self.verticalLayout.count()))         
+        for widget in answidgets:
+            if isinstance(widget, QRadioButton):
+                if widget.isChecked():
+                    checkedans[self.quesnolbl.text()] = [widget.text()]
+                    print("Ans updated -",checkedans)
+            if isinstance(widget, QCheckBox):
+                if widget.isChecked():
+                    checkedans[self.quesnolbl.text()].append(widget.text())
+                    print("Ans updated -",checkedans)
+            if isinstance(widget, QTextEdit):
+                if widget.text() is not None:
+                    checkedans[self.quesnolbl.text()] = [widget.text()]
+                    print("Ans updated -",checkedans)
+        for i in reversed(range(self.verticalLayout.count())): 
+            self.verticalLayout.removeWidget(self.verticalLayout.itemAt(i).widget())
+            print("removed widget")
+        print("quesno -",ques)       
+        sql = "select * from {} where quesNo = %s".format(examtable)
+        value = (ques,)
+        cursor.execute(sql,value)         
+        result = cursor.fetchall()
+        StoreFilepath = "img/question.jpg"
+        with open(StoreFilepath, "wb") as file:
+            file.write(result[0][2])
+            file.close()
+        self.quesdisplay.setPixmap(QPixmap("img/question.jpg"))
+        self.quesnolbl.setText(str(quesno.index(ques)+1))
+        #print("result -",result)
+        
+        self.setAns((result[0][4],result[0][5],result[0][6],result[0][7],result[0][8]),result[0][3],checkedans,ques,quesno.index(ques)+1)   
+        connection.commit()     
 
     def closeEvent(self):
         self.thread.stop()
@@ -530,9 +742,20 @@ class Exam(QMainWindow,Login):
         return QPixmap.fromImage(p)
 
     def submitExam(self):
+        sql = "ALTER TABLE {} ADD COLUMN IF NOT EXISTS {} VARCHAR(255) NOT NULL".format(examQuesTablename[0]+examQuesTablename[1]+examQuesTablename[2]+examQuesTablename[3], "marked"+self.userrollno_2.text())
+        cursor.execute(sql)
+        for i in range(1,len(checkedans)):
+            sql1 = "update {} set {} = %s where shuffledNo = %s".format(examQuesTablename[0]+examQuesTablename[1]+examQuesTablename[2]+examQuesTablename[3], "marked"+self.userrollno_2.text())
+            value1 = ""
+            for value in checkedans[str(i)]:
+                value1 += value + "#"
+            cursor.execute(sql1,(value1,i))
+        connection.commit()
         widgets.setCurrentIndex(widgets.currentIndex()-1)
         widgets.showNormal()
-        self.thread.stop()      
+        self.thread.stop() 
+        for i in range(150):
+            keyboard.unblock_key(i)   
     
 
 class VideoThread(QThread):

@@ -12,10 +12,10 @@ from PyQt5.QtWidgets import *
 from PyQt5.uic import loadUi
 import socket, cv2, pickle,struct
 import numpy as np
-import face_recognition
+#import face_recognition
 
 connection = mysql.connector.connect(host='localhost', database='OnlineExamSystem', user='root', password='', port='3306')
-cursor = connection.cursor()
+cursor = connection.cursor(buffered=True)
 
 class Login(QDialog):
     def __init__(self,master):
