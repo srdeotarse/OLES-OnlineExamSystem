@@ -9,6 +9,7 @@ from PyQt5 import QtGui, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QVBoxLayout
 from PyQt5.uic import loadUi
 import socket, cv2, pickle,struct
 import numpy as np
@@ -51,15 +52,17 @@ class Login(QDialog):
                 widgets.addWidget(mainwindow)
                 widgets.setCurrentIndex(widgets.currentIndex()+1)
         else:
-            print("Login failed")
+            self.label_3.setText("Login failed")
 
     def createAccount(self):
         self.loginframe.setVisible(False)
         self.signframe.setVisible(True)
+        self.label_2.setText("")
 
     def loginAccount(self):
         self.signframe.setVisible(False)
         self.loginframe.setVisible(True)
+        self.label_3.setText("")
         
     def blur(self):	
         self.blur_effect = QGraphicsBlurEffect()
@@ -98,31 +101,36 @@ class Login(QDialog):
         confirmPass = self.password_3.text()
         type = self.typeCombo_2.currentText()
 
-        with open (self.rollno_3.text(),"rb") as File:
-            BinaryData = File.read()
-
-        sql = "insert into user (rollno,name,email,type,password,photo) values (%s,%s,%s,%s,%s,%s)"
-        value = (rollno,name,email,type,password,BinaryData)
+        if self.rollno_3.text():
+            with open (self.rollno_3.text(),"rb") as File:
+                BinaryData = File.read()
+            sql = "insert into user (rollno,name,email,type,password,photo) values (%s,%s,%s,%s,%s,%s)"
+            value = (rollno,name,email,type,password,BinaryData)  
 
         if (rollno.isdigit() == False):
-            m = QMessageBox.about(self, "warning", "Please Enter a Roll Number in Digits")
+           self.label_2.setText("Please Enter a Roll Number in Digits")
 
         elif (len(rollno) < 7):
-            m = QMessageBox.about(self, "warning", "Please Enter a Roll Number of Length 7 Digits")
+            self.label_2.setText("Please Enter a Roll Number of Length 7 Digits")
 
         elif (len(password)<8):
-            m = QMessageBox.about(self, "warning", "Please Enter a Strong Password")
+            self.label_2.setText("Please Enter a Strong Password")
 
         elif (confirmPass != password):
-            m = QMessageBox.about(self, "warning", "Please Enter Correct Password")
+            self.label_2.setText("Please Enter Correct Password")
 
         elif (name == '' or email == '' or password == '' or rollno == '' or self.rollno_3.text() == ''):
-            m = QMessageBox.about(self, "warning", "Please fill all the data")
+            self.label_2.setText("Please fill all the data")
 
         else:
             cursor.execute(sql,value)
             connection.commit()
-            m = QMessageBox.about(self, "SUCCESS!", "ACCOUNT CREATED!")
+            self.label_2.setText("Account created successfully")
+            self.name.setText("")
+            self.rollno_2.setText("")
+            self.email.setText("")
+            self.password_2.setText("")
+            self.password_3.setText("") 
 
 
 class Application(QMainWindow,Login):
@@ -151,6 +159,9 @@ class Application(QMainWindow,Login):
         self.addquesframe.setVisible(False)
         self.addquesbtn.clicked.connect(self.showAddQuesPanel)
         self.startproctoringbtn.clicked.connect(self.startProctoring)
+        self.photobutton.clicked.connect(self.getphoto)
+        self.submitbtn.clicked.connect(self.adduser)
+        self.rollno_10.setVisible(False)
 
     def blur(self):	
         self.blur_effect = QGraphicsBlurEffect()
@@ -342,6 +353,12 @@ class Application(QMainWindow,Login):
         self.quesphotoaddresslbl.setVisible(False)
         self.quesconfirmbtn.clicked.connect(self.addQuestoCreatedExam)
         self.addquesexitbtn.clicked.connect(self.exitAddQuesPanel)
+        examQuesTablename = self.examidlbl.text()+self.examnamelbl.text()+self.examtypelbl_2.text()+self.deptlbl_2.text()
+        sql = "SELECT quesNo FROM {} ORDER BY quesNo DESC LIMIT 1".format(examQuesTablename,)
+        cursor.execute(sql)
+        quesresult = cursor.fetchone()[0]
+        print("last ques -",quesresult)
+        self.quesnolbl.setText(str(int(quesresult)+1))
 
     def getquesphoto(self):
         fname, _ = QFileDialog.getOpenFileName(self, 'Open file','c:\\',"Image files (*.jpg *.png)",options=QFileDialog.DontUseNativeDialog)
@@ -358,7 +375,7 @@ class Application(QMainWindow,Login):
         self.verticalLayoutAns.addWidget(lineedit) 
 
     def addQuestoCreatedExam(self):
-        examQuesTablename = self.examidlbl.text()+self.examnamelbl.text()+self.examtypelbl_2.text()+self.deptlbl_2.text()
+        examQuesTablename = self.examidlbl.text()+self.examnamelbl.text()+self.examtypelbl_2.text()+self.deptlbl_2.text()       
         quesno = self.quesnolbl.text()
         with open (self.quesphotoaddresslbl.text(),"rb") as File:
             BinaryData = File.read()
@@ -386,7 +403,7 @@ class Application(QMainWindow,Login):
         self.quesmarkslbl.setText("")
         self.correctanslbl.setText("")
         for i in reversed(range(self.verticalLayoutAns.count())): 
-            self.verticalLayoutAns.removeWidget(self.verticalLayoutAns.itemAt(i).widget())
+            self.verticalLayoutAns.itemAt(i).widget().deleteLater()
 
     def exitAddQuesPanel(self):
         self.createframe_2.setVisible(True)
@@ -396,6 +413,46 @@ class Application(QMainWindow,Login):
         self.deptlbl.setText("")
         self.nameofexamlbl.setText("")
         self.totalmarkslbl.setText("")
+
+    def getphoto(self):
+        fname1, _ = QFileDialog.getOpenFileName(self, 'Open file', 'c:\\', "Image files (*.jpg *.png)",options=QFileDialog.DontUseNativeDialog)
+        self.photo.setPixmap(QPixmap(fname1))
+        self.rollno_10.setText(fname1)
+
+    def adduser(self):
+        name1 = self.name1.text()
+        rollno1 = self.rollno_11.text()
+        email1 = self.email1.text()
+        password1 = self.password_5.text()
+        confirmPass1 = self.password_6.text()
+        type1 = self.typeCombo_3.currentText()
+        print("hi")
+
+        with open(self.rollno_10.text(), "rb") as File:
+            BinaryData1 = File.read()
+
+        sql = "insert into user (rollno,name,email,type,password,photo) values (%s,%s,%s,%s,%s,%s)"
+        value = (rollno1, name1, email1, type1, password1, BinaryData1)
+
+        if (rollno1.isdigit() == False):
+            self.addnewuserstatuslbl.setText("Please Enter a Roll Number in Digits")
+
+        elif (len(rollno1) < 7):
+            self.addnewuserstatuslbl.setText("Please Enter a Roll Number of Length 7 Digits")
+
+        elif (len(password1) < 8):
+            self.addnewuserstatuslbl.setText("Please Enter a Strong Password")
+
+        elif (confirmPass1 != password1):
+            self.addnewuserstatuslbl.setText("Please Enter Correct Password")
+
+        elif (name1 == '' or email1 == '' or password1 == '' or rollno1 == '' or self.rollno_10.text() == ''):
+            self.addnewuserstatuslbl.setText("Please fill all the data")
+
+        else:
+            cursor.execute(sql, value)
+            connection.commit()
+            self.addnewuserstatuslbl.setText("User added.")
 
 class Exam(QMainWindow,Login):
     def __init__(self,rollNo):
@@ -522,5 +579,6 @@ widgets = QtWidgets.QStackedWidget()
 widgets.addWidget(loginwindow)
 widgets.setMinimumWidth(1200)
 widgets.setMinimumHeight(800)
+widgets.setWindowTitle("OLES - Online Exam System - Teacher")
 widgets.show()
 app.exec_()

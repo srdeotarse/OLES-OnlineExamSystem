@@ -4,7 +4,7 @@ import sys
 import mysql.connector
 from mysql.connector import Error
 from PIL import Image
-#from PIL.ImageQt import ImageQt
+from PIL.ImageQt import ImageQt
 from PyQt5 import QtGui, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -14,6 +14,7 @@ import socket,cv2, pickle,struct
 import numpy as np
 #import face_recognition
 import time
+from datetime import datetime,date
 from gaze_tracking import GazeTracking
 import keyboard
 import random
@@ -64,15 +65,17 @@ class Login(QDialog):
                 widgets.addWidget(mainwindow)
                 widgets.setCurrentIndex(widgets.currentIndex()+1)
         else:
-            print("Login failed")
+            self.label_3.setText("Login failed")
 
     def createAccount(self):
         self.loginframe.setVisible(False)
         self.signframe.setVisible(True)
+        self.label_2.setText("")
 
     def loginAccount(self):
         self.signframe.setVisible(False)
         self.loginframe.setVisible(True)
+        self.label_3.setText("")
         
     def blur(self):	
         self.blur_effect = QGraphicsBlurEffect()
@@ -111,31 +114,36 @@ class Login(QDialog):
         confirmPass = self.password_3.text()
         type = self.typeCombo_2.currentText()
 
-        with open (self.rollno_3.text(),"rb") as File:
-            BinaryData = File.read()
-
-        sql = "insert into user (rollno,name,email,type,password,photo) values (%s,%s,%s,%s,%s,%s)"
-        value = (rollno,name,email,type,password,BinaryData)
+        if self.rollno_3.text():
+            with open (self.rollno_3.text(),"rb") as File:
+                BinaryData = File.read()
+            sql = "insert into user (rollno,name,email,type,password,photo) values (%s,%s,%s,%s,%s,%s)"
+            value = (rollno,name,email,type,password,BinaryData)        
 
         if (rollno.isdigit() == False):
-            m = QMessageBox.about(self, "warning", "Please Enter a Roll Number in Digits")
+           self.label_2.setText("Please Enter a Roll Number in Digits")
 
         elif (len(rollno) < 7):
-            m = QMessageBox.about(self, "warning", "Please Enter a Roll Number of Length 7 Digits")
+            self.label_2.setText("Please Enter a Roll Number of Length 7 Digits")
 
         elif (len(password)<8):
-            m = QMessageBox.about(self, "warning", "Please Enter a Strong Password")
+            self.label_2.setText("Please Enter a Strong Password")
 
         elif (confirmPass != password):
-            m = QMessageBox.about(self, "warning", "Please Enter Correct Password")
+            self.label_2.setText("Please Enter Correct Password")
 
         elif (name == '' or email == '' or password == '' or rollno == '' or self.rollno_3.text() == ''):
-            m = QMessageBox.about(self, "warning", "Please fill all the data")
+            self.label_2.setText("Please fill all the data")
 
         else:
             cursor.execute(sql,value)
             connection.commit()
-            m = QMessageBox.about(self, "SUCCESS!", "ACCOUNT CREATED!")
+            self.label_2.setText("Account created successfully")
+            self.name.setText("")
+            self.rollno_2.setText("")
+            self.email.setText("")
+            self.password_2.setText("")
+            self.password_3.setText("")            
 
 
 class Application(QMainWindow,Login):
@@ -166,6 +174,14 @@ class Application(QMainWindow,Login):
         self.addquesframe.setVisible(False)
         self.addquesbtn.clicked.connect(self.showAddQuesPanel)
         self.printresultbtn.clicked.connect(self.printResult)
+        self.startbtn.clicked.connect(self.showebcam)
+        self.stopbtn.clicked.connect(self.stopwebcam)
+        self.backbtn.clicked.connect(self.backf)
+        self.feedbtn.clicked.connect(self.submitFeedback)
+        # self.checkBox.stateChanged.connect(self.submitFeedback)
+        # self.checkBox_2.stateChanged.connect(self.submitFeedback1)
+        # self.checkBox_3.stateChanged.connect(self.submitFeedback2)
+        # self.checkBox_4.stateChanged.connect(self.submitFeedback3)
 
     def blur(self):	
         self.blur_effect = QGraphicsBlurEffect()
@@ -199,6 +215,7 @@ class Application(QMainWindow,Login):
         self.settingsframe.setVisible(False)
         self.currentExamsData()
         self.setBtnBG(self.dashboardbtnlbl,self.dashboardbtn,QtGui.QIcon('img/dashboard-white.png'))
+        self.startstatuslbl.setText("")
 
     def showResults(self):
         self.dashboardframe.setVisible(False)
@@ -207,8 +224,7 @@ class Application(QMainWindow,Login):
         self.adduserframe.setVisible(False)
         self.settingsframe.setVisible(False)
         self.feedbackframe.setVisible(False)
-        self.showResultsTable()
-        
+        self.showResultsTable()       
 
     def showFeedback(self):
         self.dashboardframe.setVisible(False)
@@ -271,11 +287,20 @@ class Application(QMainWindow,Login):
             examQuesTablename = (self.currentexams.model().data(self.currentexams.model().index(row, 0)),self.currentexams.model().data(self.currentexams.model().index(row, 1)),self.currentexams.model().data(self.currentexams.model().index(row, 5)),self.currentexams.model().data(self.currentexams.model().index(row, 6)),self.currentexams.model().data(self.currentexams.model().index(row, 2)),self.currentexams.model().data(self.currentexams.model().index(row, 3)),self.currentexams.model().data(self.currentexams.model().index(row, 4))) 
         print("examQuesTablename -",examQuesTablename)
 
+        sql = "SELECT * FROM exams WHERE srno = {}".format(examQuesTablename[0])
+        cursor.execute(sql)
+        examsubmitted = cursor.fetchone()
         self.rollNo = self.userrollno.text()
-        examwindow = Exam(self.rollNo)            
-        widgets.addWidget(examwindow)
-        widgets.setCurrentIndex(widgets.currentIndex()+1)
-        widgets.showFullScreen()        
+        starttime = datetime.strptime(examQuesTablename[5], '%H:%M:%S').time()
+        endtime = datetime.strptime(examQuesTablename[6], '%H:%M:%S').time()
+        if datetime.now().time() < endtime and datetime.now().time() >= starttime:
+            if examsubmitted[8] != "yes" :
+                examwindow = Exam(self.rollNo)            
+                widgets.addWidget(examwindow)
+                widgets.setCurrentIndex(widgets.currentIndex()+1)
+                widgets.showFullScreen()
+            else: self.startstatuslbl.setText("Selected exam already attempted.")
+        else: self.startstatuslbl.setText("Please select exam according to current time.")        
 
     def getExamQuesTablename(self):
         global examQuesTablename 
@@ -472,7 +497,7 @@ class Application(QMainWindow,Login):
                 file.write(myresult)
                 file.close() 
             pdf.cell(epw/1.5, 7*th, '', border=1)     
-            pdf.image('img\question'+str(row+1)+'.png', x = 19, y = 33+(row+1)*25, w = 125, h = 20)        
+            pdf.image('img\question'+str(row+1)+'.jpg', x = 19, y = 33+(row+1)*25, w = 125, h = 20)        
             pdf.cell(epw/16, 7*th, str(quesans[row][3]), border=1)    
             pdf.cell(epw/8, 7*th, str(quesans[row][4]), border=1)
             pdf.cell(epw/8, 7*th, str(quesans[row][5]), border=1)
@@ -483,7 +508,6 @@ class Application(QMainWindow,Login):
         pdf.cell(epw, 0.0, 'Analysis', align='C')
         pdf.set_font('Times','',10.0) 
         pdf.ln(10)
-
         
         # fig = plt.figure()
         # ax = fig.add_axes([0,0,1,1])
@@ -494,6 +518,111 @@ class Application(QMainWindow,Login):
 
         # pdf.image('img\analysis1.png', x = 19, y = 300, w = 125, h = 125)
         pdf.output("result.pdf")
+
+    def submitFeedback(self):
+        rollno12 = self.userrollno.text()
+        commonProblem = ""
+        if self.checkBox.isChecked:
+            commonProblem += self.checkBox.text()+","
+        if self.checkBox_2.isChecked:
+            commonProblem += self.checkBox_2.text()+","
+        if self.checkBox_3.isChecked:
+            commonProblem += self.checkBox_3.text()+","
+        if self.checkBox_4.isChecked:
+            commonProblem += self.checkBox_4.text()+","    
+        otherProblem = self.problem.text()
+        sql1 = "insert into feedback(rollno ,otherProblem,commonProblem) values(%s,%s,%s)"
+        value = (rollno12, otherProblem , commonProblem)        
+        cursor.execute(sql1, value)
+        connection.commit()
+        self.feedbackstatuslbl.setText("Feedback submitted successfully.")
+        self.checkBox.setState(False)
+        self.checkBox_2.setState(False)
+        self.checkBox_3.setState(False)
+        self.checkBox_4.setState(False)
+        self.problem.setText("")    
+
+    def showebcam(self):
+        self.thread1 = VideoThread1()
+        # connect its signal to the update_image slot
+        self.thread1.change_pixmap_signal1.connect(self.update_image1)
+        # start the thread
+        self.thread1.start()
+
+    def stopwebcam(self):
+        self.thread1.stop()
+        self.webcam.setPixmap(QPixmap())
+        self.webcam.setText("Checkout your looks!")
+
+    @pyqtSlot(np.ndarray)
+    def update_image1(self, cv_img1):
+
+        """Updates the image_label with a new opencv image"""
+
+        # face tracking
+        face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+        gray = cv2.cvtColor(cv_img1, cv2.COLOR_BGR2GRAY)
+        faces = face_cascade.detectMultiScale(gray, 1.1, 4)
+        if len(faces) == 0:
+            self.facelbl.setText('Your face not found')
+            self.majorwarninglbl.setText(str(int(self.majorwarninglbl.text()) - 1))
+        for (x, y, w, h) in faces:
+            cv2.rectangle(cv_img1, (x, y), (x + w, y + h), (255, 0, 0), 2)
+
+            # motiondetection
+        global frameCount
+        frameCount += 1
+        # Resize the frame
+        resizedFrame = cv2.resize(cv_img1, (0, 0), fx=2, fy=2)
+        cv_img1 = cv2.resize(cv_img1, (0, 0), fx=1.3, fy=1.3)
+        # Get the foreground mask
+        fgmask = fgbg.apply(resizedFrame)
+
+        # Count all the non zero pixels within the mask
+        count = np.count_nonzero(fgmask)
+        print('Frame: %d, Pixel Count: %d' % (frameCount, count))
+
+        # Determine how many pixels do you want to detect to be considered "movement"
+        # if (frameCount > 1 and cou`nt > 5000):
+        if (frameCount > 1 and count > 7000):
+            self.movementlbl.setText('Do not move')
+            self.minorwarninglbl.setText(str(int(self.minorwarninglbl.text()) - 1))
+
+        # We send this frame to GazeTracking to analyze it
+        gaze.refresh(cv_img1)
+        cv_img1 = gaze.annotated_frame()
+
+        if gaze.is_blinking():
+            self.eyelbl.setText('Blinking')
+        elif gaze.is_right():
+            self.eyelbl.setText('Looking Right')
+            self.minorwarninglbl.setText(str(int(self.minorwarninglbl.text()) - 1))
+        elif gaze.is_left():
+            self.eyelbl.setText('Looking Left')
+            self.minorwarninglbl.setText(str(int(self.minorwarninglbl.text()) - 1))
+        elif gaze.is_center():
+            self.eyelbl.setText('Looking Center')
+
+        # left_pupil = gaze.pupil_left_coords()
+        # right_pupil = gaze.pupil_right_coords()
+
+        qt_img1 = self.convert_cv_qt1(cv_img1)
+        self.webcam.setPixmap(qt_img1)
+
+        if (int(self.majorwarninglbl.text()) <= 0 or int(self.minorwarninglbl.text()) <= 0):
+            self.stopwebcam()
+
+
+    def convert_cv_qt1(self, cv_img1):
+
+        """Convert from an opencv image to QPixmap"""
+        rgb_image = cv2.cvtColor(cv_img1, cv2.COLOR_BGR2RGB)
+        h, w, ch = rgb_image.shape
+        bytes_per_line = ch * w
+        convert_to_Qt_format = QtGui.QImage(rgb_image.data, w, h, bytes_per_line, QtGui.QImage.Format_RGB888)
+
+        s = convert_to_Qt_format.scaled(400, 250, Qt.KeepAspectRatio)
+        return QPixmap.fromImage(s)
         
 
 class Exam(QMainWindow,Login):
@@ -618,7 +747,12 @@ class Exam(QMainWindow,Login):
         self.thread.start() 
 
         self.exampanel.setVisible(True)
-        self.informationframe.setVisible(False) 
+        self.informationframe.setVisible(False)
+
+        a = Application(self.userrollno_2.text())
+        examQuesTablename = a.getExamQuesTablename()
+        sql = "CREATE TABLE {} ( `warning` VARCHAR(256) NOT NULL ,`time` TIME(6) NOT NULL)".format(examQuesTablename[0]+examQuesTablename[1]+examQuesTablename[2]+examQuesTablename[3]+self.userrollno_2.text())
+        cursor.execute(sql)
 
     def shuffleQues(self,examtable):
         cursor.execute("select quesNo from {}".format(examtable))
@@ -653,20 +787,18 @@ class Exam(QMainWindow,Login):
                     checkedans[self.quesnolbl.text()] = [widget.text()]
                     print("Ans updated -",checkedans)
         for i in reversed(range(self.verticalLayout.count())): 
-            self.verticalLayout.removeWidget(self.verticalLayout.itemAt(i).widget())
-            print("removed widget")
+            self.verticalLayout.itemAt(i).widget().deleteLater()
         print("quesno -",ques)       
         sql = "select * from {} where quesNo = %s".format(examtable)
         value = (ques,)
         cursor.execute(sql,value)         
         result = cursor.fetchall()
-        StoreFilepath = "img/question.jpg"
+        StoreFilepath = "img/question{}.jpg".format(ques)
         with open(StoreFilepath, "wb") as file:
             file.write(result[0][2])
             file.close()
-        self.quesdisplay.setPixmap(QPixmap("img/question.jpg"))
+        self.quesdisplay.setPixmap(QPixmap("img/question{}.jpg".format(ques)))
         self.quesnolbl.setText(str(quesno.index(ques)+1))
-        #print("result -",result)
         
         self.setAns((result[0][4],result[0][5],result[0][6],result[0][7],result[0][8]),result[0][3],checkedans,ques,quesno.index(ques)+1)   
         connection.commit()     
@@ -677,60 +809,97 @@ class Exam(QMainWindow,Login):
 
     @pyqtSlot(np.ndarray)
     def update_image(self, cv_img):
-        """Updates the image_label with a new opencv image"""       
+        """Updates the image_label with a new opencv image"""
 
-        #face tracking
-        face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml') 
-        gray = cv2.cvtColor(cv_img, cv2.COLOR_BGR2GRAY)
-        faces = face_cascade.detectMultiScale(gray, 1.1, 4)
-        if len(faces) == 0:     
-            self.warningdisplaylbl.setText('Your face not found')
-            self.majorwarninglbl.setText(str(int(self.majorwarninglbl.text())-1))
-        for (x, y, w, h) in faces:
-            cv2.rectangle(cv_img, (x, y), (x + w, y + h), (255, 0, 0), 2)  
+        a = Application(self.userrollno_2.text())
+        examQuesTablename = a.getExamQuesTablename()
 
-        # motiondetection
-        global frameCount
-        frameCount += 1
-        # Resize the frame
-        resizedFrame = cv2.resize(cv_img, (0, 0), fx=2, fy=2)
-        cv_img = cv2.resize(cv_img, (0, 0), fx=1.3, fy=1.3)
-        # Get the foreground mask
-        fgmask = fgbg.apply(resizedFrame)
+        sql = "SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'onlineexamsystem' AND TABLE_NAME = '{}'".format(examQuesTablename[0]+examQuesTablename[1]+examQuesTablename[2]+examQuesTablename[3]+self.userrollno_2.text())
+        cursor.execute(sql)
+        existtable = cursor.fetchall()
+        if existtable:
+            #face tracking
+            face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml') 
+            gray = cv2.cvtColor(cv_img, cv2.COLOR_BGR2GRAY)
+            faces = face_cascade.detectMultiScale(gray, 1.1, 4)
+            if len(faces) == 0:     
+                self.warningdisplaylbl.setText('Your face not found')
+                self.majorwarninglbl.setText(str(int(self.majorwarninglbl.text())-1))
+                sql = "insert into {} (warning,time) values (%s,%s)".format(examQuesTablename[0]+examQuesTablename[1]+examQuesTablename[2]+examQuesTablename[3]+self.userrollno_2.text())
+                value = ('Your face not found',datetime.now().time())
+                cursor.execute(sql,value)
+            for (x, y, w, h) in faces:
+                cv2.rectangle(cv_img, (x, y), (x + w, y + h), (255, 0, 0), 2)  
 
-        # Count all the non zero pixels within the mask
-        count = np.count_nonzero(fgmask)
-        print('Frame: %d, Pixel Count: %d' % (frameCount, count))
+            # motiondetection
+            global frameCount
+            frameCount += 1
+            # Resize the frame
+            resizedFrame = cv2.resize(cv_img, (0, 0), fx=2, fy=2)
+            cv_img = cv2.resize(cv_img, (0, 0), fx=1.3, fy=1.3)
+            # Get the foreground mask
+            fgmask = fgbg.apply(resizedFrame)
 
-        # Determine how many pixels do you want to detect to be considered "movement"
-        #if (frameCount > 1 and cou`nt > 5000):
-        if (frameCount > 1 and count > 5000):
-                self.warningdisplaylbl.setText('Do not move')
+            # Count all the non zero pixels within the mask
+            count = np.count_nonzero(fgmask)
+            print('Frame: %d, Pixel Count: %d' % (frameCount, count))
+
+            #Determine how many pixels do you want to detect to be considered "movement"
+            #if (frameCount > 1 and cou`nt > 5000):
+            if (frameCount > 1 and count > 5000):
+                    self.warningdisplaylbl.setText('Do not move')
+                    self.minorwarninglbl.setText(str(int(self.minorwarninglbl.text())-1))
+                    sql = "insert into {} (warning,time) values (%s,%s)".format(examQuesTablename[0]+examQuesTablename[1]+examQuesTablename[2]+examQuesTablename[3]+self.userrollno_2.text())
+                    value = ('Do not move',datetime.now().time())
+                    cursor.execute(sql,value)
+
+            # We send this frame to GazeTracking to analyze it
+            gaze.refresh(cv_img)
+            cv_img = gaze.annotated_frame()
+
+            if gaze.is_blinking():
+                self.warningdisplaylbl.setText('Blinking')
+                sql = "insert into {} (warning,time) values (%s,%s)".format(examQuesTablename[0]+examQuesTablename[1]+examQuesTablename[2]+examQuesTablename[3]+self.userrollno_2.text())
+                value = ('Blinking',datetime.now().time())
+                cursor.execute(sql,value)
+            elif gaze.is_right():
+                self.warningdisplaylbl.setText('Looking Right')
                 self.minorwarninglbl.setText(str(int(self.minorwarninglbl.text())-1))
+                sql = "insert into {} (warning,time) values (%s,%s)".format(examQuesTablename[0]+examQuesTablename[1]+examQuesTablename[2]+examQuesTablename[3]+self.userrollno_2.text())
+                value = ('Looking Right',datetime.now().time())
+                cursor.execute(sql,value)
+            elif gaze.is_left():
+                self.warningdisplaylbl.setText('Looking Left')
+                self.minorwarninglbl.setText(str(int(self.minorwarninglbl.text())-1))
+                sql = "insert into {} (warning,time) values (%s,%s)".format(examQuesTablename[0]+examQuesTablename[1]+examQuesTablename[2]+examQuesTablename[3]+self.userrollno_2.text())
+                value = ('Looking Left',datetime.now().time())
+                cursor.execute(sql,value)
+            elif gaze.is_center():
+                self.warningdisplaylbl.setText('Looking Center')
+                sql = "insert into {} (warning,time) values (%s,%s)".format(examQuesTablename[0]+examQuesTablename[1]+examQuesTablename[2]+examQuesTablename[3]+self.userrollno_2.text())
+                value = ('Looking Center',datetime.now().time())
+                cursor.execute(sql,value)
 
-        # We send this frame to GazeTracking to analyze it
-        gaze.refresh(cv_img)
-        cv_img = gaze.annotated_frame()
+            # left_pupil = gaze.pupil_left_coords()
+            # right_pupil = gaze.pupil_right_coords()           
 
-        if gaze.is_blinking():
-            self.warningdisplaylbl.setText('Blinking')
-        elif gaze.is_right():
-            self.warningdisplaylbl.setText('Looking Right')
-            self.minorwarninglbl.setText(str(int(self.minorwarninglbl.text())-1))
-        elif gaze.is_left():
-            self.warningdisplaylbl.setText('Looking Left')
-            self.minorwarninglbl.setText(str(int(self.minorwarninglbl.text())-1))
-        elif gaze.is_center():
-            self.warningdisplaylbl.setText('Looking Center')
+            qt_img = self.convert_cv_qt(cv_img)
+            self.webcam.setPixmap(qt_img)
 
-        # left_pupil = gaze.pupil_left_coords()
-        # right_pupil = gaze.pupil_right_coords()           
+            if(int(self.majorwarninglbl.text())<0 or int(self.minorwarninglbl.text())<0 ):
+                self.submitExam()
 
-        qt_img = self.convert_cv_qt(cv_img)
-        self.webcam.setPixmap(qt_img)
-
-        if(int(self.majorwarninglbl.text())<0 or int(self.minorwarninglbl.text())<0 ):
-            self.submitExam()
+            #set time remaining
+            startingtime = self.examtimelbl.text().split('-')
+            starttime = datetime.strptime(startingtime[0], '%H:%M:%S').time()
+            testimated = datetime.strptime(startingtime[1], '%H:%M:%S').time()        
+            lefttime = datetime.combine(date.min, testimated)-datetime.combine(date.min, datetime.now().time())  # in minutes
+            secs=lefttime.seconds #timedelta has everything below the day level stored in seconds
+            minutes = secs/60
+            hours = secs/3600
+            self.timeremaininglbl.setText(str(int(hours+minutes))+" mins")
+            if lefttime == 0:
+                time_flag = False  
 
     def convert_cv_qt(self, cv_img):
         """Convert from an opencv image to QPixmap"""
@@ -796,6 +965,32 @@ class VideoThread(QThread):
         self._run_flag = False
         self.wait()
 
+class VideoThread1(QThread):
+
+    change_pixmap_signal1 = pyqtSignal(np.ndarray)
+
+
+    def __init__(self):
+            super().__init__()
+            self._run_flag = True
+
+    def run(self):
+        # capture from web cam
+        cam = cv2.VideoCapture(0)
+        while self._run_flag:
+
+            ret1, cv_img1 = cam.read()
+            self.sleep(1)
+            if ret1:
+                self.change_pixmap_signal1.emit(cv_img1)
+        # shut down capture system
+        cam.release()
+
+    def stop(self):
+        """Sets run flag to False and waits for thread to finish"""
+        self._run_flag = False
+        self.wait()
+
 app = QApplication(sys.argv)
 loginwindow = Login('dummy')
 #applicationwindow = Application('dummy')
@@ -803,6 +998,6 @@ widgets = QtWidgets.QStackedWidget()
 widgets.addWidget(loginwindow)
 widgets.setMinimumWidth(1200)
 widgets.setMinimumHeight(800)
-widgets.setWindowTitle("OLES - Online Exam System")
+widgets.setWindowTitle("OLES - Online Exam System - Student")
 widgets.show()
 app.exec_()
