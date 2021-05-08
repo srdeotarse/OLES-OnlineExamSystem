@@ -1649,6 +1649,24 @@ border-radius:10px;}</string>
         </size>
        </property>
       </widget>
+      <widget class="QLabel" name="createexamstatuslbl">
+       <property name="geometry">
+        <rect>
+         <x>330</x>
+         <y>230</y>
+         <width>291</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
       <zorder>label_8</zorder>
       <zorder>nameofexamlbl</zorder>
       <zorder>deptlbl</zorder>
@@ -1661,6 +1679,7 @@ border-radius:10px;}</string>
       <zorder>label_13</zorder>
       <zorder>dateEdit</zorder>
       <zorder>createnewexambtn</zorder>
+      <zorder>createexamstatuslbl</zorder>
      </widget>
      <widget class="QFrame" name="createframe_3">
       <property name="geometry">
@@ -2070,8 +2089,8 @@ border-radius:10px;}</string>
        <property name="font">
         <font>
          <pointsize>9</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="text">
@@ -2081,7 +2100,7 @@ border-radius:10px;}</string>
       <widget class="QLabel" name="label_18">
        <property name="geometry">
         <rect>
-         <x>180</x>
+         <x>250</x>
          <y>690</y>
          <width>101</width>
          <height>30</height>
@@ -2090,8 +2109,8 @@ border-radius:10px;}</string>
        <property name="font">
         <font>
          <pointsize>9</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="text">
@@ -2101,7 +2120,7 @@ border-radius:10px;}</string>
       <widget class="QLabel" name="label_19">
        <property name="geometry">
         <rect>
-         <x>520</x>
+         <x>710</x>
          <y>690</y>
          <width>101</width>
          <height>30</height>
@@ -2110,8 +2129,8 @@ border-radius:10px;}</string>
        <property name="font">
         <font>
          <pointsize>9</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="text">
@@ -2121,7 +2140,7 @@ border-radius:10px;}</string>
       <widget class="QLabel" name="label_20">
        <property name="geometry">
         <rect>
-         <x>370</x>
+         <x>500</x>
          <y>690</y>
          <width>91</width>
          <height>30</height>
@@ -2130,8 +2149,8 @@ border-radius:10px;}</string>
        <property name="font">
         <font>
          <pointsize>9</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="text">
@@ -2150,8 +2169,8 @@ border-radius:10px;}</string>
        <property name="font">
         <font>
          <pointsize>9</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="text">
@@ -2161,7 +2180,7 @@ border-radius:10px;}</string>
       <widget class="QLabel" name="examnamelbl">
        <property name="geometry">
         <rect>
-         <x>290</x>
+         <x>360</x>
          <y>690</y>
          <width>81</width>
          <height>30</height>
@@ -2170,8 +2189,8 @@ border-radius:10px;}</string>
        <property name="font">
         <font>
          <pointsize>9</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="text">
@@ -2181,7 +2200,7 @@ border-radius:10px;}</string>
       <widget class="QLabel" name="examtypelbl_2">
        <property name="geometry">
         <rect>
-         <x>460</x>
+         <x>590</x>
          <y>690</y>
          <width>61</width>
          <height>30</height>
@@ -2190,8 +2209,8 @@ border-radius:10px;}</string>
        <property name="font">
         <font>
          <pointsize>9</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="text">
@@ -2201,17 +2220,17 @@ border-radius:10px;}</string>
       <widget class="QLabel" name="deptlbl_2">
        <property name="geometry">
         <rect>
-         <x>630</x>
+         <x>820</x>
          <y>690</y>
-         <width>81</width>
+         <width>41</width>
          <height>30</height>
         </rect>
        </property>
        <property name="font">
         <font>
          <pointsize>9</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="text">
@@ -2485,6 +2504,175 @@ border-radius:20px;}</string>
       </property>
       <property name="text">
        <string/>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="getwarningbtn">
+      <property name="geometry">
+       <rect>
+        <x>480</x>
+        <y>290</y>
+        <width>181</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">#getwarningbtn{
+color:white;
+background:#4CAF50;
+border:none;
+border-radius:10px;}</string>
+      </property>
+      <property name="text">
+       <string>Get Warnings</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>img/startexam-white.png</normaloff>img/startexam-white.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="endexambtn">
+      <property name="geometry">
+       <rect>
+        <x>680</x>
+        <y>290</y>
+        <width>181</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">#endexambtn{
+color:white;
+background:#4CAF50;
+border:none;
+border-radius:10px;}</string>
+      </property>
+      <property name="text">
+       <string>End Exam</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>img/startexam-white.png</normaloff>img/startexam-white.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="deptlbl_3">
+      <property name="geometry">
+       <rect>
+        <x>480</x>
+        <y>230</y>
+        <width>321</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit{ background-color:rgba(255,255,255,0.6);
+border: 1px solid gray;
+border-radius: 5px;
+padding: 0 8px;
+selection-background-color: gray;}
+QLineEdit:focus { background-color:rgba(255,255 255,0.8);}</string>
+      </property>
+      <property name="text">
+       <string>Send message to student </string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="placeholderText">
+       <string>Department</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="sendbtn">
+      <property name="geometry">
+       <rect>
+        <x>810</x>
+        <y>230</y>
+        <width>51</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">#sendbtn{
+color:white;
+background:#4CAF50;
+border:none;
+border-radius:10px;}</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>img/startexam-white.png</normaloff>img/startexam-white.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+     </widget>
+     <widget class="QWidget" name="gridLayoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>480</x>
+        <y>100</y>
+        <width>381</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="warningLayout"/>
+     </widget>
+     <widget class="QLabel" name="label_32">
+      <property name="geometry">
+       <rect>
+        <x>480</x>
+        <y>60</y>
+        <width>381</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>             Warning                Time</string>
       </property>
      </widget>
     </widget>
@@ -2816,7 +3004,7 @@ border-radius:10px;}</string>
        <x>30</x>
        <y>30</y>
        <width>890</width>
-       <height>730</height>
+       <height>751</height>
       </rect>
      </property>
      <property name="font">
@@ -3323,13 +3511,13 @@ border-radius:20px;}</string>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <widget class="QTableWidget" name="currentexams_2">
+      <widget class="QTableWidget" name="existingusers">
        <property name="geometry">
         <rect>
          <x>40</x>
          <y>100</y>
          <width>821</width>
-         <height>141</height>
+         <height>121</height>
         </rect>
        </property>
        <property name="styleSheet">
@@ -3362,7 +3550,7 @@ text-align:center;}</string>
         <bool>false</bool>
        </property>
        <property name="columnCount">
-        <number>8</number>
+        <number>4</number>
        </property>
        <attribute name="horizontalHeaderVisible">
         <bool>false</bool>
@@ -3374,7 +3562,7 @@ text-align:center;}</string>
         <bool>true</bool>
        </attribute>
        <attribute name="horizontalHeaderMinimumSectionSize">
-        <number>30</number>
+        <number>200</number>
        </attribute>
        <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
         <bool>true</bool>
@@ -3389,10 +3577,6 @@ text-align:center;}</string>
        <column/>
        <column/>
        <column/>
-       <column/>
-       <column/>
-       <column/>
-       <column/>
       </widget>
       <widget class="QLabel" name="label_27">
        <property name="geometry">
@@ -3400,7 +3584,7 @@ text-align:center;}</string>
          <x>40</x>
          <y>20</y>
          <width>300</width>
-         <height>30</height>
+         <height>31</height>
         </rect>
        </property>
        <property name="font">
@@ -3417,7 +3601,7 @@ text-align:center;}</string>
         <rect>
          <x>40</x>
          <y>70</y>
-         <width>900</width>
+         <width>800</width>
          <height>20</height>
         </rect>
        </property>
@@ -3429,7 +3613,7 @@ text-align:center;}</string>
         </font>
        </property>
        <property name="text">
-        <string>   Exam ID          Name            Date        Start Time   End Time         Type             Dept       Total Marks      </string>
+        <string>             Roll No                               Name                                        Email                                   Type                   </string>
        </property>
       </widget>
       <widget class="QPushButton" name="existinguserbtn">
@@ -3507,15 +3691,33 @@ QComboBox:focus { background-color:rgba(255,255 255,0.8);}</string>
         </property>
        </item>
       </widget>
+      <widget class="QLabel" name="createexamstatuslbl_2">
+       <property name="geometry">
+        <rect>
+         <x>500</x>
+         <y>20</y>
+         <width>171</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Select user type -</string>
+       </property>
+      </widget>
      </widget>
     </widget>
-    <zorder>teacherdashboardframe</zorder>
     <zorder>resultsframe</zorder>
     <zorder>dashboardframe</zorder>
     <zorder>feedbackframe</zorder>
     <zorder>settingsframe</zorder>
     <zorder>createframe</zorder>
     <zorder>adduserframe</zorder>
+    <zorder>teacherdashboardframe</zorder>
    </widget>
   </widget>
  </widget>

@@ -176,12 +176,7 @@ class Application(QMainWindow,Login):
         self.printresultbtn.clicked.connect(self.printResult)
         self.startbtn.clicked.connect(self.showebcam)
         self.stopbtn.clicked.connect(self.stopwebcam)
-        self.backbtn.clicked.connect(self.backf)
         self.feedbtn.clicked.connect(self.submitFeedback)
-        # self.checkBox.stateChanged.connect(self.submitFeedback)
-        # self.checkBox_2.stateChanged.connect(self.submitFeedback1)
-        # self.checkBox_3.stateChanged.connect(self.submitFeedback2)
-        # self.checkBox_4.stateChanged.connect(self.submitFeedback3)
 
     def blur(self):	
         self.blur_effect = QGraphicsBlurEffect()
@@ -475,20 +470,25 @@ class Application(QMainWindow,Login):
         pdf.set_font('Times','',10.0) 
         pdf.ln(10)
 
-        pdf.set_font('Times','B',10.0)
-        pdf.cell(epw/26, 2*th, 'No', border=1, align='C')
+        pdf.set_font('Times','B',9.0)
+        pdf.cell(epw/36, 2*th, 'No', border=1, align='C')
         pdf.cell(epw/1.5, 2*th, 'Question', border=1, align='C')
-        pdf.cell(epw/16, 2*th, 'Type', border=1, align='C')    
-        pdf.cell(epw/8, 2*th, 'Correct Ans', border=1, align='C')
-        pdf.cell(epw/8, 2*th, 'Response', border=1, align='C')
+        pdf.cell(epw/18, 2*th, 'Type', border=1, align='C')    
+        pdf.cell(epw/10, 2*th, 'Correct Ans', border=1, align='C')
+        pdf.cell(epw/10, 2*th, 'Response', border=1, align='C')
+        pdf.cell(epw/20, 2*th, 'Marks', border=1, align='C')
         pdf.ln(2*th)
 
         pdf.set_font('Times','',10.0)
-        
+        marks = 0
+        attemptedans = 0
+        correctedans = 0
+        wrongans = 0
+        unattemptedans = 0
         # Here we add more padding by passing 2*th as height
         for row,row_data in enumerate(quesans):
             # Enter data in colums
-            pdf.cell(epw/26, 7*th, str(quesans[row][0]), border=1)  
+            pdf.cell(epw/36, 7*th, str(quesans[row][0]), border=1)  
             sql = "select question from {} where quesno = {}".format(examid+examname+examtype+department, str(quesans[row][0]))
             cursor.execute(sql)
             myresult = cursor.fetchone()[0]
@@ -497,12 +497,71 @@ class Application(QMainWindow,Login):
                 file.write(myresult)
                 file.close() 
             pdf.cell(epw/1.5, 7*th, '', border=1)     
-            pdf.image('img\question'+str(row+1)+'.jpg', x = 19, y = 33+(row+1)*25, w = 125, h = 20)        
-            pdf.cell(epw/16, 7*th, str(quesans[row][3]), border=1)    
-            pdf.cell(epw/8, 7*th, str(quesans[row][4]), border=1)
-            pdf.cell(epw/8, 7*th, str(quesans[row][5]), border=1)
+            pdf.image('img\question'+str(row+1)+'.jpg', x = 17, y = 58+(row*52), w = 125, h = 20)        
+            pdf.cell(epw/18, 7*th, str(quesans[row][3]), border=1)    
+            correctoptions = quesans[row][10].split("#")
+            correctans = ""
+            for option in correctoptions:
+                if option==quesans[row][4]:
+                    correctans += "A"+","
+                if option==quesans[row][5]:
+                    correctans += "B"+","
+                if option==quesans[row][6]:
+                    correctans += "C"+","
+                if option==quesans[row][7]:
+                    correctans += "D"+","
+                if option==quesans[row][8]:
+                    correctans += "E"+","
+            pdf.cell(epw/10, 7*th, correctans, border=1)
+            markedoptions = quesans[row][11].split("#")
+            markedans = ""
+            for option in markedoptions:
+                if option==quesans[row][4]:
+                    markedans += "A"+","
+                if option==quesans[row][5]:
+                    markedans += "B"+","
+                if option==quesans[row][6]:
+                    markedans += "C"+","
+                if option==quesans[row][7]:
+                    markedans += "D"+","
+                if option==quesans[row][8]:
+                    markedans += "E"+","
+            pdf.cell(epw/10, 7*th, markedans, border=1)
+            pdf.cell(epw/20, 7*th, str(quesans[row][9]), border=1)
             pdf.ln(7*th)
-        
+            if quesans[row][4]:
+                pdf.cell(epw, 1.5*th, "A) "+str(quesans[row][4]), border=1) 
+            pdf.ln(1.5*th)
+            if quesans[row][5]:
+                pdf.cell(epw, 1.5*th, "B) "+str(quesans[row][5]), border=1) 
+            pdf.ln(1.5*th)
+            if quesans[row][6]:
+                pdf.cell(epw, 1.5*th, "C) "+str(quesans[row][6]), border=1) 
+            pdf.ln(1.5*th)
+            if quesans[row][7]:
+                pdf.cell(epw, 1.5*th, "D) "+str(quesans[row][7]), border=1) 
+            pdf.ln(1.5*th)
+            if quesans[row][8]:
+                pdf.cell(epw, 1.5*th, "E) "+str(quesans[row][8]), border=1) 
+            pdf.ln(1.5*th) 
+             
+
+            #Result Calculation
+            if correctans==markedans:
+                marks += int(quesans[row][9])
+                correctedans += 1
+            if correctans!=markedans and markedans:
+                wrongans +=1
+            if markedans:
+                attemptedans += 1
+            else : unattemptedans += 1
+            
+        pdf.set_font('Times','B',10.0)
+        pdf.cell(epw/5, 1.5*th, "Total marks - "+str(marks), border=1)
+        pdf.cell(epw/5, 1.5*th, "Correct ans - "+str(correctedans), border=1)
+        pdf.cell(epw/5, 1.5*th, "Wrong ans - "+str(wrongans), border=1)
+        pdf.cell(epw/5, 1.5*th, "Attempted ans - "+str(attemptedans), border=1)
+        pdf.cell(epw/5, 1.5*th, "Unattempted ans - "+str(unattemptedans), border=1)
         pdf.ln(20)        
         pdf.set_font('Times','B',14.0) 
         pdf.cell(epw, 0.0, 'Analysis', align='C')
@@ -637,8 +696,8 @@ class Exam(QMainWindow,Login):
         self.finalstartexambtn.clicked.connect(self.startExam)
         self.submitexambtn.clicked.connect(self.submitExam)
         #blocks all keys of keyboard
-        for i in range(150):
-            keyboard.block_key(i)
+        # for i in range(150):
+        #     keyboard.block_key(i)
         a = Application(rollNo)
         examQuesTablename = a.getExamQuesTablename()
         self.examidlbl.setText(examQuesTablename[0])
@@ -923,8 +982,8 @@ class Exam(QMainWindow,Login):
         widgets.setCurrentIndex(widgets.currentIndex()-1)
         widgets.showNormal()
         self.thread.stop() 
-        for i in range(150):
-            keyboard.unblock_key(i)   
+        # for i in range(150):
+        #     keyboard.unblock_key(i)   
     
 
 class VideoThread(QThread):
@@ -942,20 +1001,20 @@ class VideoThread(QThread):
         client_socket.connect((host_ip,port)) # a tuple
         # capture from web cam
         cap = cv2.VideoCapture(0)
-        
         # Socket Accept            
-        while self._run_flag:                              
+        while self._run_flag:                             
             ret, cv_img = cap.read()
             a = pickle.dumps(cv_img)
             message = struct.pack("Q",len(a))+a
             self.sleep(1)
-            client_socket.sendall(message)
+            client_socket.send(message)
             # cv2.imshow('TRANSMITTING VIDEO',cv_img)
             # key = cv2.waitKey(1) & 0xFF
             # if key ==ord('q'):
-            #     client_socket.close()
+            #     client_socket.close()            
             if ret:
                 self.change_pixmap_signal.emit(cv_img)
+        client_socket.close()    
         # shut down capture system
         cap.release()
         

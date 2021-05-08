@@ -17,7 +17,6 @@ import numpy as np
 
 connection = mysql.connector.connect(host='localhost', database='OnlineExamSystem', user='root', password='', port='3306')
 cursor = connection.cursor(buffered=True)
-
 class Login(QDialog):
     def __init__(self,master):
         self.master = master
@@ -159,8 +158,10 @@ class Application(QMainWindow,Login):
         self.addquesframe.setVisible(False)
         self.addquesbtn.clicked.connect(self.showAddQuesPanel)
         self.startproctoringbtn.clicked.connect(self.startProctoring)
+        self.endexambtn.clicked.connect(lambda: self.endStudentExam())
         self.photobutton.clicked.connect(self.getphoto)
         self.submitbtn.clicked.connect(self.adduser)
+        self.existinguserbtn.clicked.connect(self.showAddedUsers)
         self.rollno_10.setVisible(False)
 
     def blur(self):	
@@ -272,6 +273,7 @@ class Application(QMainWindow,Login):
     def startProctoring(self):
         self.teacherdashboardframe.setVisible(True)
         self.dashboardframe.setVisible(False)
+        
          # create the video capture thread
         self.thread = VideoThread()
         # connect its signal to the update_image slot
@@ -297,7 +299,10 @@ class Application(QMainWindow,Login):
         bytes_per_line = ch * w
         convert_to_Qt_format = QtGui.QImage(rgb_image.data, w, h, bytes_per_line, QtGui.QImage.Format_RGB888)
         p = convert_to_Qt_format.scaled(400, 250, Qt.KeepAspectRatio)
-        return QPixmap.fromImage(p)      
+        return QPixmap.fromImage(p) 
+
+    def endStudentExam(self):
+        print("endexam")
 
     def createNewExam(self):
         examname = self.nameofexamlbl.text()
@@ -324,6 +329,7 @@ class Application(QMainWindow,Login):
         examQuesTablename = str(myresult[0])+examname+examtype+department;
         sql2 = "CREATE TABLE {} ( `quesNo` VARCHAR(20) NOT NULL ,`shuffledNo` VARCHAR(20) NULL , `question` LONGBLOB NOT NULL , `type` VARCHAR(255) NOT NULL , `option1` VARCHAR(255) NULL , `option2` VARCHAR(255) NULL , `option3` VARCHAR(255) NULL , `option4` VARCHAR(255) NULL , `option5` VARCHAR(255) NULL ,`marks` VARCHAR(20) NOT NULL , `correctAns` VARCHAR(255) NOT NULL , PRIMARY KEY (`quesNo`))".format(examQuesTablename)
         cursor.execute(sql2)
+        self.createexamstatuslbl.setText("New exam created.")
 
     def setCreatedExams(self):
         cursor.execute("SELECT srno,name,DATE_FORMAT(date,\"%d-%m-%Y\")AS Date,starttime,endtime,type,dept,totalmarks FROM exams ")
@@ -335,6 +341,11 @@ class Application(QMainWindow,Login):
                 self.createdexams.setItem(row_number, column_number, QTableWidgetItem(str(data)))
         self.createdexams.setSelectionBehavior(QTableView.SelectRows);
         self.createdexams.clicked.connect(self.selectCreatedExam)
+        self.createexamstatuslbl.setText("")
+        self.nameofexamlbl.setText("")
+        self.examtypelbl.setText("")
+        self.totalmarkslbl.setText("")        
+        self.deptlbl.setText("")
 
     def selectCreatedExam(self):
         rows = sorted(set(index.row() for index in self.createdexams.selectedIndexes()))
@@ -356,9 +367,10 @@ class Application(QMainWindow,Login):
         examQuesTablename = self.examidlbl.text()+self.examnamelbl.text()+self.examtypelbl_2.text()+self.deptlbl_2.text()
         sql = "SELECT quesNo FROM {} ORDER BY quesNo DESC LIMIT 1".format(examQuesTablename,)
         cursor.execute(sql)
-        quesresult = cursor.fetchone()[0]
-        print("last ques -",quesresult)
-        self.quesnolbl.setText(str(int(quesresult)+1))
+        quesresult = cursor.fetchall()
+        if quesresult:
+            print("last ques -",quesresult[0])
+            self.quesnolbl.setText(str(int(quesresult[0])+1))
 
     def getquesphoto(self):
         fname, _ = QFileDialog.getOpenFileName(self, 'Open file','c:\\',"Image files (*.jpg *.png)",options=QFileDialog.DontUseNativeDialog)
@@ -454,6 +466,17 @@ class Application(QMainWindow,Login):
             connection.commit()
             self.addnewuserstatuslbl.setText("User added.")
 
+    def showAddedUsers(self):
+        usertype = '"'+self.typeCombo_4.currentText()+'"'
+        cursor.execute("SELECT rollno,name,email,type FROM user where type = {}".format(usertype))
+        result = cursor.fetchall()
+        self.existingusers.setRowCount(0)
+        for row_number, row_data in enumerate(result):
+            self.existingusers.insertRow(row_number)
+            for column_number, data in enumerate(row_data):
+                self.existingusers.setItem(row_number, column_number, QTableWidgetItem(str(data)))
+        self.existingusers.setSelectionBehavior(QTableView.SelectRows)
+
 class Exam(QMainWindow,Login):
     def __init__(self,rollNo):
         super(Exam,self).__init__(rollNo)
@@ -546,24 +569,23 @@ class VideoThread(QThread):
         data = b""
         payload_size = struct.calcsize("Q")        
 
-        while True:           
-            while self._run_flag:
-                while len(data) < payload_size:
-                    data+=client_socket.recv(4*1024)
-                packed_msg_size = data[:payload_size]
-                data = data[payload_size:]
-                msg_size = struct.unpack("Q",packed_msg_size)[0]
+        while self._run_flag:
+            while len(data) < payload_size:
+                data+=client_socket.recv(4*1024)
+            packed_msg_size = data[:payload_size]
+            data = data[payload_size:]
+            msg_size = struct.unpack("Q",packed_msg_size)[0]
                 
-                while len(data) < msg_size:
-                    data += client_socket.recv(4*1024)
-                frame_data = data[:msg_size]
-                data  = data[msg_size:]
-                cv_img = pickle.loads(frame_data)
-                # cv2.imshow("RECEIVING VIDEO",cv_img)
-                # key = cv2.waitKey(1) & 0xFF
-                # if key  == ord('q'):
-                #     break
-                self.change_pixmap_signal.emit(cv_img)
+            while len(data) < msg_size:
+                data += client_socket.recv(4*1024)
+            frame_data = data[:msg_size]
+            data  = data[msg_size:]
+            cv_img = pickle.loads(frame_data)
+            # cv2.imshow("RECEIVING VIDEO",cv_img)
+            # key = cv2.waitKey(1) & 0xFF
+            # if key  == ord('q'):
+            #     break
+            self.change_pixmap_signal.emit(cv_img)
         client_socket.close()
 
     def stop(self):
