@@ -1,6 +1,8 @@
 import base64
 import io
 import sys
+import os
+import threading
 import mysql.connector
 from mysql.connector import Error
 from PIL import Image
@@ -30,6 +32,8 @@ fgbg = cv2.createBackgroundSubtractorMOG2(300, 400, True)
 gaze = GazeTracking()
 examQuesTablename = ()
 checkedans = {'0':None}
+msgDisplay = b""
+
 
 class Login(QDialog):
     def __init__(self,master):
@@ -219,6 +223,12 @@ class Application(QMainWindow,Login):
         self.adduserframe.setVisible(False)
         self.settingsframe.setVisible(False)
         self.feedbackframe.setVisible(False)
+        self.rollnoresultlbl.setVisible(False)
+        self.resultexams_2.setVisible(False)
+        self.resultexams_3.setVisible(False)
+        self.label_33.setVisible(False)
+        self.getSubjbtn.setVisible(False)
+        self.getSubjResponsesbtn.setVisible(False)
         self.showResultsTable()       
 
     def showFeedback(self):
@@ -693,8 +703,13 @@ class Exam(QMainWindow,Login):
         self.userrollno_2.setText(rollNo)
         self.setUserInfo()        
         self.exampanel.setVisible(False)
+        self.subjlbl.setVisible(False)
+        self.uploadbtn.setVisible(False)
+        self.username_4.setVisible(False)
+        self.timeremaininglbl_2.setVisible(False)
         self.finalstartexambtn.clicked.connect(self.startExam)
         self.submitexambtn.clicked.connect(self.submitExam)
+        self.uploadbtn.clicked.connect(self.uploadSubj)
         #blocks all keys of keyboard
         # for i in range(150):
         #     keyboard.block_key(i)
@@ -750,6 +765,11 @@ class Exam(QMainWindow,Login):
         print("Checked Ans -",checkedans)            
 
     def setAns(self,fetchedans,type,checkedans,ques,quesno):
+        self.subjlbl.setVisible(False)
+        self.uploadbtn.setVisible(False)
+        self.username_4.setVisible(False)
+        self.timeremaininglbl_2.setVisible(False)
+        self.uploadstatuslbl.setText("")
         a = list(fetchedans)
         random.shuffle(a)
         answers = tuple(a)        
@@ -796,14 +816,61 @@ class Exam(QMainWindow,Login):
             if len(checkedans[str(quesno)]):
                 label.setText(checkedans[str(quesno)][0])
             self.verticalLayout.addWidget(label)
+        elif type == "subj":            
+            self.subjlbl.setVisible(True)
+            self.uploadbtn.setVisible(True)
+            self.username_4.setVisible(True)
+            self.timeremaininglbl_2.setVisible(True)
+            self.gridLayoutFrame.setVisible(False)
+            #set time remaining
+            examname = self.examidlbl.text()+self.examnamelbl.text()+self.examtypelbl.text()+self.examdeptlbl.text()
+            #startingtime = self.timeremaininglbl.text()[:-4]
+            sqlques = "SELECT shuffledNo FROM {} WHERE quesNo = {}".format(examname,self.quesnolbl.text())
+            cursor.execute(sqlques)
+            result = cursor.fetchall()[0]
+            sqltime = "SELECT time FROM {} WHERE quesNo = {}".format(examname,result[0])
+            cursor.execute(sqltime)
+            resultime = cursor.fetchall()[0]
+            timeduration = resultime[0]
+            print("time - ",timeduration)            
+            # while timeduration:
+            #     mins, secs = divmod(timeduration, 60)
+            #     timeformat = '{:02d}:{:02d}'.format(mins, secs)
+            #     time.sleep(1)
+            #     timeduration -= 1
+            #     self.timeremaininglbl_2.setText(timeformat)
+            self.uploadbtn.setEnabled(True)
+            self.gridLayoutFrame.setVisible(True)
+
+
+    def uploadSubj(self):
+        fname, _ = QFileDialog.getOpenFileName(self, 'Open file','c:\\',"PDF Files (*.pdf)",options=QFileDialog.DontUseNativeDialog)
+        if fname:
+            with open (fname,"rb") as File:
+                BinaryData = File.read()
+            examname = self.examidlbl.text()+self.examnamelbl.text()+self.examtypelbl.text()+self.examdeptlbl.text()
+            sql = "ALTER TABLE {} ADD COLUMN IF NOT EXISTS {} LONGBLOB NULL".format(examname, "pdf"+self.userrollno_2.text())
+            cursor.execute(sql)
+            sqlques = "SELECT shuffledNo FROM {} WHERE quesNo = {}".format(examname,self.quesnolbl.text())
+            cursor.execute(sqlques)
+            result = cursor.fetchall()[0]
+            sqlpdf = "update {} set pdf{} = %s where quesNo = %s".format(examname,self.userrollno_2.text())
+            print('fname -',fname)    
+            a1 = (BinaryData,result[0])
+            cursor.execute(sqlpdf,a1)
+            connection.commit()
+            self.uploadstatuslbl.setText("PDF file uploaded")
+        else : self.uploadstatuslbl.setText("PDF file not selected")
 
     def startExam(self):
-        # create the video capture thread
-        self.thread = VideoThread()
-        # connect its signal to the update_image slot
-        self.thread.change_pixmap_signal.connect(self.update_image)
-        # start the thread
-        self.thread.start() 
+        # # create the video capture thread
+        # self.thread = VideoThread()
+        # # connect its signal to the update_image slot
+        # self.thread.change_pixmap_signal.connect(self.update_image)
+        # # start the thread
+        # self.thread.start()
+       
+        receive = self.start()
 
         self.exampanel.setVisible(True)
         self.informationframe.setVisible(False)
@@ -812,6 +879,51 @@ class Exam(QMainWindow,Login):
         examQuesTablename = a.getExamQuesTablename()
         sql = "CREATE TABLE {} ( `warning` VARCHAR(256) NOT NULL ,`time` TIME(6) NOT NULL)".format(examQuesTablename[0]+examQuesTablename[1]+examQuesTablename[2]+examQuesTablename[3]+self.userrollno_2.text())
         cursor.execute(sql)
+
+    def start(self):
+        """
+        Establishes the client-server connection. Gathers user input for the username,
+        creates and starts the Send and Receive threads, and notifies other connected clients.
+
+        Returns:
+            A Receive object representing the receiving thread.
+        """
+        """
+        Initializes and runs the GUI application.
+
+        Args:
+            host (str): The IP address of the server's listening socket.
+            port (int): The port number of the server's listening socket.
+        """
+        host_name  = socket.gethostname()
+        host = socket.gethostbyname(host_name)
+        port = 1060
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+        name = self.username_2.text()
+        messages = None
+        print('Trying to connect to {}:{}...'.format(host, port))
+        sock.connect((host, port))
+        print('Successfully connected to {}:{}'.format(host, port))
+        
+        # print()
+        # self.name = input('Your name: ')
+
+        # print()
+        # print('Welcome, {}! Getting ready to send and receive messages...'.format(self.name))
+
+        # Create send and receive threads
+        send = Send(sock, name)
+        receive = Receive(sock, name)
+        send.change_pixmap_signal.connect(self.update_image)
+        # Start send and receive threads
+        send.start()
+        receive.start()
+
+        sock.sendall(bytes("Server: {} has joined the chat. Say hi!".format(name),'utf-8'))
+        print("\rAll set! Leave the chatroom anytime by typing 'QUIT'\n")
+        print('{}: '.format(name), end = '')
+
+        return receive
 
     def shuffleQues(self,examtable):
         cursor.execute("select quesNo from {}".format(examtable))
@@ -869,7 +981,7 @@ class Exam(QMainWindow,Login):
     @pyqtSlot(np.ndarray)
     def update_image(self, cv_img):
         """Updates the image_label with a new opencv image"""
-
+        #print("update_image running")
         a = Application(self.userrollno_2.text())
         examQuesTablename = a.getExamQuesTablename()
 
@@ -958,7 +1070,26 @@ class Exam(QMainWindow,Login):
             hours = secs/3600
             self.timeremaininglbl.setText(str(int(hours+minutes))+" mins")
             if lefttime == 0:
-                time_flag = False  
+                time_flag = False 
+
+            global msgDisplay
+            print("msgDisplay - ",msgDisplay)
+            if not msgDisplay==b'' and not msgDisplay==b'QUIT':
+                if msgDisplay == b'endexam':
+                    print("exam submitted")
+                    self.submitExam()
+                else :
+                    msg = QMessageBox()
+                    msg.setIcon(QMessageBox.Information)
+                    msg.setText(msgDisplay.decode('utf-8'))
+                    msg.setInformativeText("Please click OK to continue your exam.")
+                    msg.setWindowTitle("Message from Teacher")
+                    msg.setStandardButtons(QMessageBox.Ok)
+                    msg.setBaseSize(QSize(300, 600));                
+                    msgDisplay = b''
+                    msg.exec_() 
+            
+            
 
     def convert_cv_qt(self, cv_img):
         """Convert from an opencv image to QPixmap"""
@@ -981,7 +1112,8 @@ class Exam(QMainWindow,Login):
         connection.commit()
         widgets.setCurrentIndex(widgets.currentIndex()-1)
         widgets.showNormal()
-        self.thread.stop() 
+        global msgDisplay
+        msgDisplay = b'QUIT'
         # for i in range(150):
         #     keyboard.unblock_key(i)   
     
@@ -1050,13 +1182,247 @@ class VideoThread1(QThread):
         self._run_flag = False
         self.wait()
 
-app = QApplication(sys.argv)
-loginwindow = Login('dummy')
-#applicationwindow = Application('dummy')
-widgets = QtWidgets.QStackedWidget()
-widgets.addWidget(loginwindow)
-widgets.setMinimumWidth(1200)
-widgets.setMinimumHeight(800)
-widgets.setWindowTitle("OLES - Online Exam System - Student")
-widgets.show()
-app.exec_()
+class Send(QThread):
+    """
+    Sending thread listens for user input from the command line.
+
+    Attributes:
+        sock (socket.socket): The connected socket object.
+        name (str): The username provided by the user.
+    """
+
+    change_pixmap_signal = pyqtSignal(np.ndarray)
+
+    def __init__(self, sock, name):
+        super().__init__()
+        self.sock = sock
+        self.name = name
+
+    def run(self):
+        """
+        Listens for user input from the command line only and sends it to the server.
+        Typing 'QUIT' will close the connection and exit the application.
+        """
+        while True:
+            # print('{}: '.format(self.name), end='')
+            # sys.stdout.flush()
+            # message = sys.stdin.readline()[:-1]
+            vid = cv2.VideoCapture(0)
+            global msgDisplay
+            while(msgDisplay!=b'QUIT'):
+                ret,cv_img = vid.read()
+                a = pickle.dumps(cv_img)
+                message = struct.pack("Q",len(a))+a
+                time.sleep(1)
+                self.sock.send(message)
+                if msgDisplay==b'QUIT':
+                    self.sock.send(b'QUIT')			
+                #   cv2.imshow('TRANSMITTING VIDEO',frame)
+                #   key = cv2.waitKey(1) & 0xFF
+                #   if key ==ord('q'):
+                #     self.sock.close()
+                if ret:
+                    self.change_pixmap_signal.emit(cv_img)
+            vid.release()
+
+            # Type 'QUIT' to leave the chatroom
+            if msgDisplay == b'QUIT':
+                # self.sock.sendall('Server: {} has left the chat.'.format(self.name).encode('ascii'))
+                break
+            
+            # Send message to server for broadcasting
+            # else:
+            #     self.sock.sendall('{}: {}'.format(self.name, message).encode('ascii'))
+        
+        print('\nQuitting...')
+        self.sock.close()
+        #os._exit(0)
+
+
+class Receive(threading.Thread):
+    """
+    Receiving thread listens for incoming messages from the server.
+
+    Attributes:
+        sock (socket.socket): The connected socket object.
+        name (str): The username provided by the user.
+        messages (tk.Listbox): The tk.Listbox object containing all messages displayed on the GUI.
+    """
+    def __init__(self, sock, name):
+        super().__init__()
+        self.sock = sock
+        self.name = name
+        self.messages = None
+
+    def run(self):
+        """
+        Receives data from the server and displays it in the GUI.
+        Always listens for incoming data until either end has closed the socket.
+        """
+        while True:
+            message = self.sock.recv(1024)
+
+            if message:
+
+                if self.messages:
+                    self.messages.insert(tk.END, message)
+                    print('hi')
+                    print('\r{}\n{}: '.format(message, self.name), end = '')
+                
+                else:
+                    # Thread has started, but client GUI is not yet ready
+                    print('\r{}\n{}: '.format(message, self.name), end = '')
+                    global msgDisplay
+                    msgDisplay = message
+            
+            else:
+                # Server has closed the socket, exit the program
+                print('\nOh no, we have lost connection to the server!')
+                print('\nQuitting...')
+                self.sock.close()
+                #os._exit(0)
+
+class Client:
+    """
+    Supports management of client-server connections and integration with the GUI.
+
+    Attributes:
+        host (str): The IP address of the server's listening socket.
+        port (int): The port number of the server's listening socket.
+        sock (socket.socket): The connected socket object.
+        name (str): The username of the client.
+        messages (tk.Listbox): The tk.Listbox object containing all messages displayed on the GUI.
+    """
+    def __init__(self, host, port):
+        self.host = host
+        self.port = port
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.name = None
+        self.messages = None
+    
+    def start(self):
+        """
+        Establishes the client-server connection. Gathers user input for the username,
+        creates and starts the Send and Receive threads, and notifies other connected clients.
+
+        Returns:
+            A Receive object representing the receiving thread.
+        """
+        print('Trying to connect to {}:{}...'.format(self.host, self.port))
+        self.sock.connect((self.host, self.port))
+        print('Successfully connected to {}:{}'.format(self.host, self.port))
+        
+        # print()
+        # self.name = input('Your name: ')
+
+        # print()
+        # print('Welcome, {}! Getting ready to send and receive messages...'.format(self.name))
+
+        # Create send and receive threads
+        send = Send(self.sock, self.name)
+        a = Exam("5019114")
+        send.change_pixmap_signal.connect(a.update_image)
+        receive = Receive(self.sock, self.name)
+
+        # Start send and receive threads
+        send.start()
+        receive.start()
+
+        self.sock.sendall('Server: {} has joined the chat. Say hi!'.format(self.name).encode('ascii'))
+        print("\rAll set! Leave the chatroom anytime by typing 'QUIT'\n")
+        print('{}: '.format(self.name), end = '')
+
+        return receive
+
+    def stop(self):
+        self.sock.close()
+
+    # def send(self, text_input):
+    #     """
+    #     Sends text_input data from the GUI. This method should be bound to text_input and 
+    #     any other widgets that activate a similar function e.g. buttons.
+    #     Typing 'QUIT' will close the connection and exit the application.
+
+    #     Args:
+    #         text_input(tk.Entry): A tk.Entry object meant for user text input.
+    #     """
+    #     message = text_input.get()
+    #     text_input.delete(0, tk.END)
+    #     self.messages.insert(tk.END, '{}: {}'.format(self.name, message))
+
+    #     # Type 'QUIT' to leave the chatroom
+    #     if message == 'QUIT':
+    #         self.sock.sendall('Server: {} has left the chat.'.format(self.name).encode('ascii'))
+            
+    #         print('\nQuitting...')
+    #         self.sock.close()
+    #         os._exit(0)
+        
+    #     # Send message to server for broadcasting
+    #     else:
+    #         self.sock.sendall('{}: {}'.format(self.name, message).encode('ascii'))
+
+
+# def main():    
+
+#     # window = tk.Tk()
+#     # window.title('Chatroom')
+
+#     # frm_messages = tk.Frame(master=window)
+#     # scrollbar = tk.Scrollbar(master=frm_messages)
+#     # messages = tk.Listbox(
+#     #     master=frm_messages, 
+#     #     yscrollcommand=scrollbar.set
+#     # )
+#     # scrollbar.pack(side=tk.RIGHT, fill=tk.Y, expand=False)
+#     # messages.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+    
+#     # client.messages = messages
+#     # receive.messages = messages
+
+#     # frm_messages.grid(row=0, column=0, columnspan=2, sticky="nsew")
+
+#     # frm_entry = tk.Frame(master=window)
+#     # text_input = tk.Entry(master=frm_entry)
+#     # text_input.pack(fill=tk.BOTH, expand=True)
+#     # text_input.bind("<Return>", lambda x: client.send(text_input))
+#     # text_input.insert(0, "Your message here.")
+
+#     # btn_send = tk.Button(
+#     #     master=window,
+#     #     text='Send',
+#     #     command=lambda: client.send(text_input)
+#     # )
+
+#     # frm_entry.grid(row=1, column=0, padx=10, sticky="ew")
+#     # btn_send.grid(row=1, column=1, pady=10, sticky="ew")
+
+#     # window.rowconfigure(0, minsize=500, weight=1)
+#     # window.rowconfigure(1, minsize=50, weight=0)
+#     # window.columnconfigure(0, minsize=500, weight=1)
+#     # window.columnconfigure(1, minsize=200, weight=0)
+
+#     # window.mainloop()
+
+
+# if __name__ == '__main__':
+#     # parser = argparse.ArgumentParser(description='Chatroom Server')
+#     # parser.add_argument('host', help='Interface the server listens at')
+#     # parser.add_argument('-p', metavar='PORT', type=int, default=1060,
+#     #                     help='TCP port (default 1060)')
+#     # args = parser.parse_args()
+
+#     #main(args.host, args.p)
+#     main()
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)    
+    loginwindow = Login('dummy')
+    #applicationwindow = Application('dummy')
+    widgets = QtWidgets.QStackedWidget()
+    widgets.addWidget(loginwindow)
+    widgets.setMinimumWidth(1200)
+    widgets.setMinimumHeight(800)
+    widgets.setWindowTitle("OLES - Online Exam System - Student")
+    widgets.show()
+    app.exec_()
