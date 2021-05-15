@@ -1,6 +1,7 @@
 import base64
 import io
 import sys
+from playsound import playsound
 import os
 import threading
 import mysql.connector
@@ -158,6 +159,7 @@ class Application(QMainWindow,Login):
         self.blur()
         self.userrollno.setText(rollNo)
         self.setUserInfo()
+        self.startproctoringbtn.setVisible(False)
         self.resultsframe.setVisible(False)
         self.teacherdashboardframe.setVisible(False)
         self.createframe.setVisible(False)
@@ -205,6 +207,11 @@ class Application(QMainWindow,Login):
         QPushButton.setStyleSheet("color:white; text-align:left; padding-left:20px;")
         QPushButton.setIcon(Image)
 
+    def removeBtnBG(self,QLabel,QPushButton,Image):
+        QLabel.setStyleSheet("background:transparent; border-radius:10px")
+        QPushButton.setStyleSheet("color:black; text-align:left; padding-left:20px;")
+        QPushButton.setIcon(Image)
+
     def showDashboard(self):
         self.dashboardframe.setVisible(True)
         self.resultsframe.setVisible(False)
@@ -214,9 +221,16 @@ class Application(QMainWindow,Login):
         self.settingsframe.setVisible(False)
         self.currentExamsData()
         self.setBtnBG(self.dashboardbtnlbl,self.dashboardbtn,QtGui.QIcon('img/dashboard-white.png'))
+        self.removeBtnBG(self.feedbackbtnlbl,self.feedbackbtn,QtGui.QIcon('img/feedback-black.png'))
+        self.removeBtnBG(self.settingsbtnlbl,self.settingsbtn,QtGui.QIcon('img/settings-black.png'))
+        self.removeBtnBG(self.resultbtnlbl,self.resultsbtn,QtGui.QIcon('img/result-black.png'))
         self.startstatuslbl.setText("")
 
     def showResults(self):
+        self.removeBtnBG(self.dashboardbtnlbl,self.dashboardbtn,QtGui.QIcon('img/dashboard-black.png'))
+        self.removeBtnBG(self.feedbackbtnlbl,self.feedbackbtn,QtGui.QIcon('img/feedback-black.png'))
+        self.removeBtnBG(self.settingsbtnlbl,self.settingsbtn,QtGui.QIcon('img/settings-black.png'))
+        self.setBtnBG(self.resultbtnlbl,self.resultsbtn,QtGui.QIcon('img/result-white.png'))
         self.dashboardframe.setVisible(False)
         self.resultsframe.setVisible(True)
         self.createframe.setVisible(False)
@@ -227,11 +241,24 @@ class Application(QMainWindow,Login):
         self.resultexams_2.setVisible(False)
         self.resultexams_3.setVisible(False)
         self.label_33.setVisible(False)
+        self.label_34.setVisible(False)
+        self.label_35.setVisible(False)
+        self.label_36.setVisible(False)
+        self.label_37.setVisible(False)
+        self.refreshResultsbtn.setVisible(False)
+        self.textEdit.setVisible(False)
+        self.marksSubj.setVisible(False)
+        self.remarkbtn.setVisible(False)
+        self.pdfSubjStatus.setVisible(False)
         self.getSubjbtn.setVisible(False)
         self.getSubjResponsesbtn.setVisible(False)
         self.showResultsTable()       
 
     def showFeedback(self):
+        self.removeBtnBG(self.dashboardbtnlbl,self.dashboardbtn,QtGui.QIcon('img/dashboard-black.png'))
+        self.setBtnBG(self.feedbackbtnlbl,self.feedbackbtn,QtGui.QIcon('img/feedback-white.png'))
+        self.removeBtnBG(self.settingsbtnlbl,self.settingsbtn,QtGui.QIcon('img/settings-black.png'))
+        self.removeBtnBG(self.resultbtnlbl,self.resultsbtn,QtGui.QIcon('img/result-black.png'))
         self.dashboardframe.setVisible(False)
         self.resultsframe.setVisible(False)
         self.createframe.setVisible(False)
@@ -240,6 +267,10 @@ class Application(QMainWindow,Login):
         self.feedbackframe.setVisible(True)
 
     def showSettings(self):
+        self.removeBtnBG(self.dashboardbtnlbl,self.dashboardbtn,QtGui.QIcon('img/dashboard-black.png'))
+        self.removeBtnBG(self.feedbackbtnlbl,self.feedbackbtn,QtGui.QIcon('img/feedback-black.png'))
+        self.setBtnBG(self.settingsbtnlbl,self.settingsbtn,QtGui.QIcon('img/settings-white.png'))
+        self.removeBtnBG(self.resultbtnlbl,self.resultsbtn,QtGui.QIcon('img/result-black.png'))
         self.dashboardframe.setVisible(False)
         self.resultsframe.setVisible(False)
         self.createframe.setVisible(False)
@@ -450,7 +481,7 @@ class Application(QMainWindow,Login):
             examname = self.resultexams.model().data(self.resultexams.model().index(row, 1))
             examtype = self.resultexams.model().data(self.resultexams.model().index(row, 5))
             department = self.resultexams.model().data(self.resultexams.model().index(row, 6))
-        sql = "SELECT * FROM {}".format(examid+examname+examtype+department)
+        sql = "SELECT quesNo,shuffledNo,question,type,option1,option2,option3,option4,option5,marks,correctAns,marked{},remark{} FROM {}".format(self.userrollno.text(),self.userrollno.text(),examid+examname+examtype+department,)
         print("examtable -",examid+examname+examtype+department)
         cursor.execute(sql)
         quesans = cursor.fetchall()
@@ -495,6 +526,7 @@ class Application(QMainWindow,Login):
         correctedans = 0
         wrongans = 0
         unattemptedans = 0
+        lastrow = 0
         # Here we add more padding by passing 2*th as height
         for row,row_data in enumerate(quesans):
             # Enter data in colums
@@ -508,53 +540,60 @@ class Application(QMainWindow,Login):
                 file.close() 
             pdf.cell(epw/1.5, 7*th, '', border=1)     
             pdf.image('img\question'+str(row+1)+'.jpg', x = 17, y = 58+(row*52), w = 125, h = 20)        
-            pdf.cell(epw/18, 7*th, str(quesans[row][3]), border=1)    
-            correctoptions = quesans[row][10].split("#")
-            correctans = ""
-            for option in correctoptions:
-                if option==quesans[row][4]:
-                    correctans += "A"+","
-                if option==quesans[row][5]:
-                    correctans += "B"+","
-                if option==quesans[row][6]:
-                    correctans += "C"+","
-                if option==quesans[row][7]:
-                    correctans += "D"+","
-                if option==quesans[row][8]:
-                    correctans += "E"+","
-            pdf.cell(epw/10, 7*th, correctans, border=1)
-            markedoptions = quesans[row][11].split("#")
-            markedans = ""
-            for option in markedoptions:
-                if option==quesans[row][4]:
-                    markedans += "A"+","
-                if option==quesans[row][5]:
-                    markedans += "B"+","
-                if option==quesans[row][6]:
-                    markedans += "C"+","
-                if option==quesans[row][7]:
-                    markedans += "D"+","
-                if option==quesans[row][8]:
-                    markedans += "E"+","
-            pdf.cell(epw/10, 7*th, markedans, border=1)
-            pdf.cell(epw/20, 7*th, str(quesans[row][9]), border=1)
-            pdf.ln(7*th)
-            if quesans[row][4]:
-                pdf.cell(epw, 1.5*th, "A) "+str(quesans[row][4]), border=1) 
-            pdf.ln(1.5*th)
-            if quesans[row][5]:
-                pdf.cell(epw, 1.5*th, "B) "+str(quesans[row][5]), border=1) 
-            pdf.ln(1.5*th)
-            if quesans[row][6]:
-                pdf.cell(epw, 1.5*th, "C) "+str(quesans[row][6]), border=1) 
-            pdf.ln(1.5*th)
-            if quesans[row][7]:
-                pdf.cell(epw, 1.5*th, "D) "+str(quesans[row][7]), border=1) 
-            pdf.ln(1.5*th)
-            if quesans[row][8]:
-                pdf.cell(epw, 1.5*th, "E) "+str(quesans[row][8]), border=1) 
-            pdf.ln(1.5*th) 
-             
+            pdf.cell(epw/18, 7*th, str(quesans[row][3]), border=1)
+            if not str(quesans[row][3])=="subj":   
+                correctoptions = quesans[row][10].split("#")
+                correctans = ""
+                for option in correctoptions:
+                    if option==quesans[row][4]:
+                        correctans += "A"+","
+                    if option==quesans[row][5]:
+                        correctans += "B"+","
+                    if option==quesans[row][6]:
+                        correctans += "C"+","
+                    if option==quesans[row][7]:
+                        correctans += "D"+","
+                    if option==quesans[row][8]:
+                        correctans += "E"+","
+                pdf.cell(epw/10, 7*th, correctans, border=1)
+                markedoptions = quesans[row][11].split("#")
+                markedans = ""
+                for option in markedoptions:
+                    if option==quesans[row][4]:
+                        markedans += "A"+","
+                    if option==quesans[row][5]:
+                        markedans += "B"+","
+                    if option==quesans[row][6]:
+                        markedans += "C"+","
+                    if option==quesans[row][7]:
+                        markedans += "D"+","
+                    if option==quesans[row][8]:
+                        markedans += "E"+","
+                pdf.cell(epw/10, 7*th, markedans, border=1)
+                pdf.cell(epw/20, 7*th, str(quesans[row][9]), border=1)
+                pdf.ln(7*th)
+                if quesans[row][4]:
+                    pdf.cell(epw, 1.5*th, "A) "+str(quesans[row][4]), border=1) 
+                pdf.ln(1.5*th)
+                if quesans[row][5]:
+                    pdf.cell(epw, 1.5*th, "B) "+str(quesans[row][5]), border=1) 
+                pdf.ln(1.5*th)
+                if quesans[row][6]:
+                    pdf.cell(epw, 1.5*th, "C) "+str(quesans[row][6]), border=1) 
+                pdf.ln(1.5*th)
+                if quesans[row][7]:
+                    pdf.cell(epw, 1.5*th, "D) "+str(quesans[row][7]), border=1) 
+                pdf.ln(1.5*th)
+                if quesans[row][8]:
+                    pdf.cell(epw, 1.5*th, "E) "+str(quesans[row][8]), border=1) 
+                pdf.ln(1.5*th) 
+            else:
+                pdf.cell(epw/5, 7*th, "Remarks - "+str(quesans[row][12]), border=1)
+                pdf.cell(epw/20, 7*th, str(quesans[row][9]), border=1)                
+                marks += int(quesans[row][11])
+                pdf.ln(7*th) 
+                pdf.ln(7.5*th)           
+            lastrow = row             
 
             #Result Calculation
             if correctans==markedans:
@@ -574,18 +613,66 @@ class Application(QMainWindow,Login):
         pdf.cell(epw/5, 1.5*th, "Unattempted ans - "+str(unattemptedans), border=1)
         pdf.ln(20)        
         pdf.set_font('Times','B',14.0) 
+        pdf.add_page()
         pdf.cell(epw, 0.0, 'Analysis', align='C')
-        pdf.set_font('Times','',10.0) 
-        pdf.ln(10)
+        pdf.set_font('Times','',10.0)
         
-        # fig = plt.figure()
-        # ax = fig.add_axes([0,0,1,1])
-        # langs = ['Correct Answers', 'Wrong Answers', 'Unattempted Answers']
-        # students = [23,17,35]
-        # ax.bar(langs,students)
-        # plt.savefig("img/analysis1.png")
+        
+        import matplotlib.pyplot as plt
 
-        # pdf.image('img\analysis1.png', x = 19, y = 300, w = 125, h = 125)
+        langs = ['Correct','Wrong']
+        students = [correctedans,wrongans]
+
+
+        barlist = plt.bar(langs,students)
+        barlist[0].set_color('r')
+        barlist[1].set_color('y')
+        plt.savefig('img\\analysis2.png')
+        plt.close()
+
+
+        import matplotlib.pyplot as plt1
+
+        langs1 = ['Attempted','Unattempted']
+        students1 = [attemptedans,unattemptedans]
+        barlist1 = plt1.bar(langs1,students1)
+        barlist1[0].set_color('g')
+        barlist1[1].set_color('b')
+        plt1.savefig("img\\analysis3.png")
+        plt1.close()
+
+
+        import matplotlib.pyplot as plt2
+        labels = 'Correct', 'Uncorrect', 'Attempted', 'Unattempted'
+        sizes = [correctedans, wrongans, attemptedans, unattemptedans]
+        explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
+        fig1, ax1 = plt2.subplots()
+        ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
+                shadow=True, startangle=90)
+        ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+        plt2.savefig("img\\analysis.png")
+        plt2.close()
+
+
+        import numpy as np
+        import matplotlib.pyplot as plt3
+        X = ['Q1', 'Q2', 'Q3', 'Q4']
+        MARKST = [20, 20, 20, 20]
+        MARKSO = [10, 10, 15, 10]
+        X_axis = np.arange(len(X))
+        plt3.bar(X_axis - 0.2, MARKST, 0.4, label='Marks Total')
+        plt3.bar(X_axis + 0.2, MARKSO, 0.4, label='Marks Got')
+        plt3.xticks(X_axis, X)
+        plt3.xlabel("QUESTIONS")
+        plt3.ylabel("MARKS")
+        plt3.title("Analysis of questions answers ")
+        plt3.savefig("img\\analysis4.png")
+        plt3.close()
+
+        pdf.image('img/analysis.png', x = 0, y = 40, w = 100, h = 100)
+        pdf.image('img/analysis2.png', x = 100, y = 40, w = 100, h = 100)
+        pdf.image('img/analysis3.png', x = 0, y = 150, w = 100, h = 100)
+        pdf.image('img/analysis4.png', x = 100, y = 150, w = 100, h = 100)
         pdf.output("result.pdf")
 
     def submitFeedback(self):
@@ -605,10 +692,10 @@ class Application(QMainWindow,Login):
         cursor.execute(sql1, value)
         connection.commit()
         self.feedbackstatuslbl.setText("Feedback submitted successfully.")
-        self.checkBox.setState(False)
-        self.checkBox_2.setState(False)
-        self.checkBox_3.setState(False)
-        self.checkBox_4.setState(False)
+        self.checkBox.setChecked(False)
+        self.checkBox_2.setChecked(False)
+        self.checkBox_3.setChecked(False)
+        self.checkBox_4.setChecked(False)
         self.problem.setText("")    
 
     def showebcam(self):
@@ -653,7 +740,7 @@ class Application(QMainWindow,Login):
 
         # Determine how many pixels do you want to detect to be considered "movement"
         # if (frameCount > 1 and cou`nt > 5000):
-        if (frameCount > 1 and count > 7000):
+        if (frameCount > 1 and count > 7500):
             self.movementlbl.setText('Do not move')
             self.minorwarninglbl.setText(str(int(self.minorwarninglbl.text()) - 1))
 
@@ -710,9 +797,11 @@ class Exam(QMainWindow,Login):
         self.finalstartexambtn.clicked.connect(self.startExam)
         self.submitexambtn.clicked.connect(self.submitExam)
         self.uploadbtn.clicked.connect(self.uploadSubj)
+
         #blocks all keys of keyboard
         # for i in range(150):
         #     keyboard.block_key(i)
+
         a = Application(rollNo)
         examQuesTablename = a.getExamQuesTablename()
         self.examidlbl.setText(examQuesTablename[0])
@@ -870,15 +959,20 @@ class Exam(QMainWindow,Login):
         # # start the thread
         # self.thread.start()
        
+        a = Application(self.userrollno_2.text())
+        examQuesTablename = a.getExamQuesTablename()
+        try:
+            sql = "CREATE TABLE {} ( `warning` VARCHAR(256) NOT NULL ,`time` TIME(6) NOT NULL)".format(examQuesTablename[0]+examQuesTablename[1]+examQuesTablename[2]+examQuesTablename[3]+self.userrollno_2.text())
+            cursor.execute(sql)
+        except:
+            sql = "TRUNCATE TABLE {}".format(examQuesTablename[0]+examQuesTablename[1]+examQuesTablename[2]+examQuesTablename[3]+self.userrollno_2.text(),)
+
         receive = self.start()
 
         self.exampanel.setVisible(True)
         self.informationframe.setVisible(False)
 
-        a = Application(self.userrollno_2.text())
-        examQuesTablename = a.getExamQuesTablename()
-        sql = "CREATE TABLE {} ( `warning` VARCHAR(256) NOT NULL ,`time` TIME(6) NOT NULL)".format(examQuesTablename[0]+examQuesTablename[1]+examQuesTablename[2]+examQuesTablename[3]+self.userrollno_2.text())
-        cursor.execute(sql)
+        
 
     def start(self):
         """
@@ -995,7 +1089,9 @@ class Exam(QMainWindow,Login):
             faces = face_cascade.detectMultiScale(gray, 1.1, 4)
             if len(faces) == 0:     
                 self.warningdisplaylbl.setText('Your face not found')
+                playsound('face.mp3')
                 self.majorwarninglbl.setText(str(int(self.majorwarninglbl.text())-1))
+
                 sql = "insert into {} (warning,time) values (%s,%s)".format(examQuesTablename[0]+examQuesTablename[1]+examQuesTablename[2]+examQuesTablename[3]+self.userrollno_2.text())
                 value = ('Your face not found',datetime.now().time())
                 cursor.execute(sql,value)
@@ -1017,11 +1113,12 @@ class Exam(QMainWindow,Login):
 
             #Determine how many pixels do you want to detect to be considered "movement"
             #if (frameCount > 1 and cou`nt > 5000):
-            if (frameCount > 1 and count > 5000):
+            if (frameCount > 1  and count > 7500):
                     self.warningdisplaylbl.setText('Do not move')
                     self.minorwarninglbl.setText(str(int(self.minorwarninglbl.text())-1))
                     sql = "insert into {} (warning,time) values (%s,%s)".format(examQuesTablename[0]+examQuesTablename[1]+examQuesTablename[2]+examQuesTablename[3]+self.userrollno_2.text())
                     value = ('Do not move',datetime.now().time())
+                    #playsound('movement.mp3')
                     cursor.execute(sql,value)
 
             # We send this frame to GazeTracking to analyze it
@@ -1034,16 +1131,16 @@ class Exam(QMainWindow,Login):
                 value = ('Blinking',datetime.now().time())
                 cursor.execute(sql,value)
             elif gaze.is_right():
-                self.warningdisplaylbl.setText('Looking Right')
+                self.warningdisplaylbl.setText('Looking Away')
                 self.minorwarninglbl.setText(str(int(self.minorwarninglbl.text())-1))
                 sql = "insert into {} (warning,time) values (%s,%s)".format(examQuesTablename[0]+examQuesTablename[1]+examQuesTablename[2]+examQuesTablename[3]+self.userrollno_2.text())
-                value = ('Looking Right',datetime.now().time())
+                value = ('Looking Awayt',datetime.now().time())
                 cursor.execute(sql,value)
             elif gaze.is_left():
-                self.warningdisplaylbl.setText('Looking Left')
+                self.warningdisplaylbl.setText('Looking Away')
                 self.minorwarninglbl.setText(str(int(self.minorwarninglbl.text())-1))
                 sql = "insert into {} (warning,time) values (%s,%s)".format(examQuesTablename[0]+examQuesTablename[1]+examQuesTablename[2]+examQuesTablename[3]+self.userrollno_2.text())
-                value = ('Looking Left',datetime.now().time())
+                value = ('Looking Away',datetime.now().time())
                 cursor.execute(sql,value)
             elif gaze.is_center():
                 self.warningdisplaylbl.setText('Looking Center')
@@ -1056,8 +1153,10 @@ class Exam(QMainWindow,Login):
 
             qt_img = self.convert_cv_qt(cv_img)
             self.webcam.setPixmap(qt_img)
+            if (int(self.minorwarninglbl.text()) == 10):
+                playsound('10.mp3')
 
-            if(int(self.majorwarninglbl.text())<0 or int(self.minorwarninglbl.text())<0 ):
+            if(int(self.majorwarninglbl.text())<=0 or int(self.minorwarninglbl.text())<=0 ):
                 self.submitExam()
 
             #set time remaining

@@ -174,7 +174,10 @@ class Application(QMainWindow,Login):
         self.submitbtn.clicked.connect(self.adduser)
         self.existinguserbtn.clicked.connect(self.showAddedUsers)
         self.getSubjResponsesbtn.clicked.connect(self.showSubjQues)
+        self.getSubjbtn.clicked.connect(self.getSubjPDF)
         self.refreshResultsbtn.clicked.connect(self.showResultsTable)
+        self.remarkbtn.clicked.connect(self.enterRemark)
+        self.getwarningbtn.clicked.connect(self.showWarnings)
         self.rollno_10.setVisible(False)
 
     def blur(self):	
@@ -201,6 +204,11 @@ class Application(QMainWindow,Login):
         QPushButton.setStyleSheet("color:white; text-align:left; padding-left:20px;")
         QPushButton.setIcon(Image)
 
+    def removeBtnBG(self,QLabel,QPushButton,Image):
+        QLabel.setStyleSheet("background:transparent; border-radius:10px")
+        QPushButton.setStyleSheet("color:black; text-align:left; padding-left:20px;")
+        QPushButton.setIcon(Image)
+
     def showDashboard(self):
         self.dashboardframe.setVisible(True)
         self.resultsframe.setVisible(False)
@@ -210,8 +218,21 @@ class Application(QMainWindow,Login):
         self.settingsframe.setVisible(False)
         self.currentExamsData()
         self.setBtnBG(self.dashboardbtnlbl,self.dashboardbtn,QtGui.QIcon('img/dashboard-white.png'))
+        self.removeBtnBG(self.settingsbtnlbl,self.settingsbtn,QtGui.QIcon('img/settings-black.png'))
+        self.removeBtnBG(self.feedbackbtnlbl,self.feedbackbtn,QtGui.QIcon('img/feedback-black.png'))
+        self.removeBtnBG(self.resultbtnlbl,self.resultsbtn,QtGui.QIcon('img/result-black.png'))
+        self.removeBtnBG(self.createexambtnlbl,self.createexambtn,QtGui.QIcon('img/exam-black.png'))
+        self.removeBtnBG(self.adduserbtnlbl,self.adduserbtn,QtGui.QIcon('img/adduser-black.png'))
+
+
 
     def showResults(self):
+        self.setBtnBG(self.resultbtnlbl,self.resultsbtn,QtGui.QIcon('img/result-white.png'))
+        self.removeBtnBG(self.settingsbtnlbl,self.settingsbtn,QtGui.QIcon('img/settings-black.png'))
+        self.removeBtnBG(self.feedbackbtnlbl,self.feedbackbtn,QtGui.QIcon('img/feedback-black.png'))
+        self.removeBtnBG(self.dashboardbtnlbl,self.dashboardbtn,QtGui.QIcon('img/dashboard-black.png'))
+        self.removeBtnBG(self.createexambtnlbl,self.createexambtn,QtGui.QIcon('img/exam-black.png'))
+        self.removeBtnBG(self.adduserbtnlbl,self.adduserbtn,QtGui.QIcon('img/adduser-black.png'))
         self.dashboardframe.setVisible(False)
         self.resultsframe.setVisible(True)
         self.createframe.setVisible(False)
@@ -222,6 +243,12 @@ class Application(QMainWindow,Login):
         self.resultexams.setVisible(False)
 
     def showFeedback(self):
+        self.setBtnBG(self.feedbackbtnlbl,self.feedbackbtn,QtGui.QIcon('img/feedback-white.png'))
+        self.removeBtnBG(self.settingsbtnlbl,self.settingsbtn,QtGui.QIcon('img/settings-black.png'))
+        self.removeBtnBG(self.dashboardbtnlbl,self.dashboardbtn,QtGui.QIcon('img/dashboard-black.png'))
+        self.removeBtnBG(self.resultbtnlbl,self.resultsbtn,QtGui.QIcon('img/result-black.png'))
+        self.removeBtnBG(self.createexambtnlbl,self.createexambtn,QtGui.QIcon('img/exam-black.png'))
+        self.removeBtnBG(self.adduserbtnlbl,self.adduserbtn,QtGui.QIcon('img/adduser-black.png'))
         self.dashboardframe.setVisible(False)
         self.resultsframe.setVisible(False)
         self.createframe.setVisible(False)
@@ -230,6 +257,12 @@ class Application(QMainWindow,Login):
         self.feedbackframe.setVisible(True)
 
     def showSettings(self):
+        self.setBtnBG(self.settingsbtnlbl,self.settingsbtn,QtGui.QIcon('img/settings-white.png'))
+        self.removeBtnBG(self.feedbackbtnlbl,self.feedbackbtn,QtGui.QIcon('img/feedback-black.png'))
+        self.removeBtnBG(self.dashboardbtnlbl,self.dashboardbtn,QtGui.QIcon('img/dashboard-black.png'))
+        self.removeBtnBG(self.resultbtnlbl,self.resultsbtn,QtGui.QIcon('img/result-black.png'))
+        self.removeBtnBG(self.createexambtnlbl,self.createexambtn,QtGui.QIcon('img/exam-black.png'))
+        self.removeBtnBG(self.adduserbtnlbl,self.adduserbtn,QtGui.QIcon('img/adduser-black.png'))
         self.dashboardframe.setVisible(False)
         self.resultsframe.setVisible(False)
         self.createframe.setVisible(False)
@@ -238,6 +271,12 @@ class Application(QMainWindow,Login):
         self.feedbackframe.setVisible(False)
 
     def showCreate(self):
+        self.setBtnBG(self.createexambtnlbl,self.createexambtn,QtGui.QIcon('img/exam-white.png'))
+        self.removeBtnBG(self.settingsbtnlbl,self.settingsbtn,QtGui.QIcon('img/settings-black.png'))
+        self.removeBtnBG(self.dashboardbtnlbl,self.dashboardbtn,QtGui.QIcon('img/dashboard-black.png'))
+        self.removeBtnBG(self.resultbtnlbl,self.resultsbtn,QtGui.QIcon('img/result-black.png'))
+        self.removeBtnBG(self.feedbackbtnlbl,self.feedbackbtn,QtGui.QIcon('img/feedback-black.png'))
+        self.removeBtnBG(self.adduserbtnlbl,self.adduserbtn,QtGui.QIcon('img/adduser-black.png'))
         self.dashboardframe.setVisible(False)
         self.resultsframe.setVisible(False)
         self.createframe.setVisible(True)
@@ -247,6 +286,12 @@ class Application(QMainWindow,Login):
         self.setCreatedExams()
 
     def showAddUser(self):
+        self.setBtnBG(self.adduserbtnlbl,self.adduserbtn,QtGui.QIcon('img/adduser-white.png'))
+        self.removeBtnBG(self.settingsbtnlbl,self.settingsbtn,QtGui.QIcon('img/settings-black.png'))
+        self.removeBtnBG(self.dashboardbtnlbl,self.dashboardbtn,QtGui.QIcon('img/dashboard-black.png'))
+        self.removeBtnBG(self.resultbtnlbl,self.resultsbtn,QtGui.QIcon('img/result-black.png'))
+        self.removeBtnBG(self.createexambtnlbl,self.createexambtn,QtGui.QIcon('img/exam-black.png'))
+        self.removeBtnBG(self.feedbackbtnlbl,self.feedbackbtn,QtGui.QIcon('img/feedback-black.png'))
         self.dashboardframe.setVisible(False)
         self.resultsframe.setVisible(False)
         self.createframe.setVisible(False)
@@ -297,6 +342,25 @@ class Application(QMainWindow,Login):
         # # start the thread
         # self.thread.start()     
         receive = self.start()
+    
+    def showWarnings(self):
+        for i in reversed(range(self.warningLayout.count())): 
+            self.warningLayout.itemAt(i).widget().deleteLater()
+        # sqlwarning = "SELECT * FROM 1atia2it5019114 LIMIT 2"
+        # cursor.execute(sqlwarning)
+        # warning = cursor.fetchall()
+        label = QLabel()
+        label.setFixedWidth(1280)
+        label.setFont(QFont('',14))
+        label.setText("Do not move")
+        label.setStyleSheet("background: rgba(255,255,255,0.6);border-radius:5px; padding:10px 10px")
+        self.warningLayout.addWidget(label) 
+        label1 = QLabel()
+        label1.setFixedWidth(1280)
+        label1.setFont(QFont('',14))
+        label1.setText("Looking Away")
+        label1.setStyleSheet("background: rgba(255,255,255,0.6);border-radius:5px; padding:10px 10px")
+        self.warningLayout.addWidget(label1)
 
     def sendMsgFromTeacher(self):
         global msgtostudent
@@ -407,7 +471,7 @@ class Application(QMainWindow,Login):
         myresult = cursor.fetchone()
 
         examQuesTablename = str(myresult[0])+examname+examtype+department;
-        sql2 = "CREATE TABLE {} ( `quesNo` VARCHAR(20) NOT NULL ,`shuffledNo` VARCHAR(20) NULL , `question` LONGBLOB NOT NULL , `type` VARCHAR(255) NOT NULL , `option1` VARCHAR(255) NULL , `option2` VARCHAR(255) NULL , `option3` VARCHAR(255) NULL , `option4` VARCHAR(255) NULL , `option5` VARCHAR(255) NULL ,`marks` VARCHAR(20) NOT NULL , `correctAns` VARCHAR(255) NOT NULL , PRIMARY KEY (`quesNo`))".format(examQuesTablename)
+        sql2 = "CREATE TABLE {} ( `quesNo` VARCHAR(20) NOT NULL ,`shuffledNo` VARCHAR(20) NULL , `question` LONGBLOB NOT NULL , `type` VARCHAR(255) NOT NULL , `option1` VARCHAR(255) NULL , `option2` VARCHAR(255) NULL , `option3` VARCHAR(255) NULL , `option4` VARCHAR(255) NULL , `option5` VARCHAR(255) NULL ,`marks` VARCHAR(20) NOT NULL ,`time` VARCHAR(20) NOT NULL,  `correctAns` VARCHAR(255) NOT NULL , PRIMARY KEY (`quesNo`))".format(examQuesTablename)
         cursor.execute(sql2)
         self.createexamstatuslbl.setText("New exam created.")
 
@@ -591,6 +655,10 @@ class Application(QMainWindow,Login):
             department = self.resultexams_2.model().data(self.resultexams_2.model().index(row, 6))
         sql = "SELECT quesNo,pdf{} FROM {} WHERE type = 'subj'".format(self.rollnoresultlbl.text(),examid+examname+examtype+department)
         print("examtable -",examid+examname+examtype+department)
+        self.examidlbl_2.setText(examid)
+        self.examnamelbl_2.setText(examname)
+        self.examtypelbl_3.setText(examtype)
+        self.deptlbl_3.setText(department)
         cursor.execute(sql)
         subjPdf = cursor.fetchall()
         if subjPdf:
@@ -599,20 +667,49 @@ class Application(QMainWindow,Login):
                 for column_number, data in enumerate(row_data):
                     self.resultexams_3.setItem(row_number, column_number, QTableWidgetItem(str(data)))
         self.resultexams_3.setSelectionBehavior(QTableView.SelectRows)
+        self.pdfSubjStatus.setText("Select question no to get student response PDF")
 
     def getSubjPDF(self):
-        rows = sorted(set(index.row() for index in self.resultexams_2.selectedIndexes()))
-        examid = ""
-        examname = ""
-        examtype = ""
-        department = ""
-        for row in rows:
-            examid = self.resultexams_2.model().data(self.resultexams_2.model().index(row, 0))
-            examname = self.resultexams_2.model().data(self.resultexams_2.model().index(row, 1))
-            examtype = self.resultexams_2.model().data(self.resultexams_2.model().index(row, 5))
-            department = self.resultexams_2.model().data(self.resultexams_2.model().index(row, 6))
-        sql = "UPDATE {} quesNo,pdf{} FROM {} WHERE type = 'subj'".format(self.rollnoresultlbl.text(),examid+examname+examtype+department)
+        examid = self.examidlbl_2.text()
+        examname = self.examnamelbl_2.text()
+        examtype = self.examtypelbl_3.text()
+        department = self.deptlbl_3.text()
 
+        rows1 = sorted(set(index.row() for index in self.resultexams_3.selectedIndexes()))
+        quesno = ""
+        pdffile = ""
+        for row in rows1:
+            quesno = self.resultexams_3.model().data(self.resultexams_3.model().index(row, 0))
+            pdffile = self.resultexams_3.model().data(self.resultexams_3.model().index(row, 1))
+
+        sql = "SELECT quesNo,pdf{} FROM {} WHERE type = 'subj'".format(self.rollnoresultlbl.text(),examid+examname+examtype+department)
+        cursor.execute(sql)
+        fileresult = cursor.fetchall()[0]
+        StoreFilepath = "ques{}_".format(fileresult[0],)+examid+examname+examtype+department+"_{}.pdf".format(self.rollnoresultlbl.text(),)
+        with open(StoreFilepath, "wb") as file:
+            file.write(fileresult[1])
+            file.close()
+        self.pdfSubjStatus.setText("PDF Downloaded")
+
+    def enterRemark(self):
+        examid = self.examidlbl_2.text()
+        examname = self.examnamelbl_2.text()
+        examtype = self.examtypelbl_3.text()
+        department = self.deptlbl_3.text()
+
+        rows1 = sorted(set(index.row() for index in self.resultexams_3.selectedIndexes()))
+        quesno = ""
+        pdffile = ""
+        for row in rows1:
+            quesno = self.resultexams_3.model().data(self.resultexams_3.model().index(row, 0))
+            pdffile = self.resultexams_3.model().data(self.resultexams_3.model().index(row, 1))
+        remark = self.textEdit.toPlainText()
+        marks = self.marksSubj.text()
+        sqlremark = "UPDATE {} set remark{} = '{}',marked{} = '{}' where quesNo = '{}'".format(examid+examname+examtype+department,self.rollnoresultlbl.text(),remark,self.rollnoresultlbl.text(),marks,quesno)
+        cursor.execute(sqlremark)
+        connection.commit()
+        self.textEdit.setPlainText("")
+        self.marksSubj.setText("")
 
 class Exam(QMainWindow,Login):
     def __init__(self,rollNo):

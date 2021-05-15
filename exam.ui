@@ -299,17 +299,63 @@ border:none;
 border-radius:10px;}</string>
      </property>
      <property name="text">
-      <string>Start Exam</string>
+      <string>  Start Exam</string>
      </property>
      <property name="icon">
       <iconset>
-       <normaloff>C:/Users/srdeotarse/.designer/backup/img/startexam-white.png</normaloff>C:/Users/srdeotarse/.designer/backup/img/startexam-white.png</iconset>
+       <normaloff>img/startexam-white.png</normaloff>img/startexam-white.png</iconset>
      </property>
      <property name="iconSize">
       <size>
-       <width>20</width>
-       <height>20</height>
+       <width>30</width>
+       <height>30</height>
       </size>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>109</x>
+       <y>169</y>
+       <width>1241</width>
+       <height>631</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;1) Please make sure you have a good and a stable Internet Connection&lt;/p&gt;&lt;p&gt;2) If you are using a Laptop, make sure that it has adequate Charging &lt;/p&gt;&lt;p&gt;3) Please sit in a well-lit room so as to ensure precise proctoring &lt;/p&gt;&lt;p&gt;4) Do not move from your seat after starting the Exam &lt;/p&gt;&lt;p&gt;5) Please keep some pages ready with you for rough work &lt;/p&gt;&lt;p&gt;6) Do not keep any other application windows/tabs running on the Device&lt;/p&gt;&lt;p&gt;7) Make sure you place the webcam in such a way that your face is captured properly &lt;/p&gt;&lt;p&gt;8) Please connect an Audio output device in order to receive Audio warnings&lt;/p&gt;&lt;p&gt;9) Mark your options correctly and review once after completing the Paper &lt;/p&gt;&lt;p&gt;10) Use of mobile phones is strictly prohibited, except for making PDFS&lt;/p&gt;&lt;p&gt;11) Upload correct and legible PDFS &lt;/p&gt;&lt;p&gt;12) Start and complete the Exams precisely in the allocated Time slot &lt;/p&gt;&lt;p&gt;13) Name the PDFS as Rollnumber_Subject_Question (Eg:- 14_PCPF_10) &lt;/p&gt;&lt;p&gt;14) If you face any problem during the Exam, please contact the Teacher / Admin &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="examdatelbl_2">
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>80</y>
+       <width>221</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>20</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Instructions</string>
      </property>
     </widget>
    </widget>
@@ -443,16 +489,16 @@ border:none;
 border-radius:10px;}</string>
       </property>
       <property name="text">
-       <string>Submit</string>
+       <string> Submit</string>
       </property>
       <property name="icon">
        <iconset>
-        <normaloff>C:/Users/srdeotarse/.designer/backup/img/startexam-white.png</normaloff>C:/Users/srdeotarse/.designer/backup/img/startexam-white.png</iconset>
+        <normaloff>img/startexam-white.png</normaloff>img/startexam-white.png</iconset>
       </property>
       <property name="iconSize">
        <size>
-        <width>20</width>
-        <height>20</height>
+        <width>30</width>
+        <height>30</height>
        </size>
       </property>
      </widget>
@@ -478,16 +524,16 @@ border:none;
 border-radius:10px;}</string>
       </property>
       <property name="text">
-       <string>Upload</string>
+       <string>  Upload</string>
       </property>
       <property name="icon">
        <iconset>
-        <normaloff>C:/Users/srdeotarse/.designer/backup/img/startexam-white.png</normaloff>C:/Users/srdeotarse/.designer/backup/img/startexam-white.png</iconset>
+        <normaloff>img/feedback-white.png</normaloff>img/feedback-white.png</iconset>
       </property>
       <property name="iconSize">
        <size>
-        <width>20</width>
-        <height>20</height>
+        <width>30</width>
+        <height>30</height>
        </size>
       </property>
      </widget>
@@ -521,6 +567,9 @@ border-radius:10px;}</string>
       </property>
      </widget>
      <widget class="QLabel" name="username_4">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>400</x>
@@ -537,7 +586,7 @@ border-radius:10px;}</string>
        </font>
       </property>
       <property name="text">
-       <string>Time Remaining :</string>
+       <string/>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -943,7 +992,7 @@ color:red;}
 </string>
      </property>
      <property name="text">
-      <string>10</string>
+      <string>20</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_17">
@@ -981,7 +1030,7 @@ color:red;}
       </font>
      </property>
      <property name="text">
-      <string>50</string>
+      <string>100</string>
      </property>
     </widget>
    </widget>
@@ -989,8 +1038,8 @@ color:red;}
    <zorder>sidemenu</zorder>
    <zorder>examdetailsframe</zorder>
    <zorder>warningdetailsframe</zorder>
-   <zorder>informationframe</zorder>
    <zorder>exampanel</zorder>
+   <zorder>informationframe</zorder>
   </widget>
  </widget>
  <resources/>
